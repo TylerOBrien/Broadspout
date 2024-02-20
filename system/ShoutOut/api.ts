@@ -1,0 +1,120 @@
+/**
+ * Config Imports
+*/
+
+import { ShoutOutConfig } from '@config/ShoutOut';
+import { TwitchConfig } from '@config/Twitch';
+
+/**
+ * System Imports
+*/
+
+import { ChatCommand, CommandRegister } from '@system/Command';
+import { isAlphaNumericChar } from '@system/Utility';
+
+/**
+ * Relative Imports
+*/
+
+import { ShoutoutHandler } from './types';
+
+/**
+ * Locals
+*/
+
+let _handler: ShoutoutHandler;
+
+/**
+ * Private Functions
+*/
+
+/**
+ * Returns true if the given name is a valid Twitch username. False otherwise.
+ *
+ * @param {string} name The name of a user to check.
+ *
+ * @return {boolean}
+ */
+function _isValidForShoutOut(
+    name: string): boolean
+{
+    if (name.length < 4 || name.length > 25) { // Username length requirements enforced by Twitch.
+        return false;
+    }
+
+    let index = name.length;
+
+    while (index--) {
+        if (name[index] !== '_' && !isAlphaNumericChar(name.charCodeAt(index))) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Handles the given command data as a shout out.
+ *
+ * @param {ChatCommand} command The command data object.
+ *
+ * @return {void}
+ */
+function _handleShoutOut(
+    command: ChatCommand): void
+{
+    if (!_handler) {
+        return;
+    }
+
+    let username = (command.contents || '').trim();
+
+    if (username[0] === '@') {
+        username = username.slice(1);
+    }
+
+    if (!_isValidForShoutOut(username)) {
+        return;
+    }
+
+    switch (username.toLowerCase()) {
+    case TwitchConfig.channel:
+        if (ShoutOutConfig.allowBroadcaster) {
+            _handler(command.user, username);
+        }
+        break;
+    case TwitchConfig.username:
+        if (ShoutOutConfig.allowBot) {
+            _handler(command.user, username);
+        }
+        break;
+    default:
+        _handler(command.user, username);
+        break;
+    }
+}
+
+/**
+ * Public Functions
+*/
+
+/**
+ * Sets the function that will be called whenever a user is shouted out.
+ *
+ * @param {ShoutoutHandler} handler The handler to use.
+ *
+ * @return {void}
+ */
+export function ShoutOutSetHandler(
+    handler: ShoutoutHandler): void
+{
+    _handler = handler;
+}
+
+/**
+ * @return {Promise<void>}
+ */
+export async function ShoutOutInit(): Promise<void>
+{
+    CommandRegister('so', _handleShoutOut);
+}

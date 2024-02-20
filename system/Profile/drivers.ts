@@ -1,0 +1,122 @@
+/**
+ * Systems
+*/
+
+import { ProfileConfig } from '@config/Profile';
+import { StorageGet, StorageSet } from '@system/Storage';
+
+/**
+ * Relative Imports
+*/
+
+import { Profile, ProfileHttpOptions } from './types';
+
+/**
+ * Public Functions
+*/
+
+/**
+ * @param {string} username
+ * @param {ProfileHttpOptions} options
+ *
+ * @return {Promise<Profile>}
+ */
+export function ProfileDriverSRC(
+    username: string,
+    options: ProfileHttpOptions): Promise<Profile>
+{
+    return new Promise(async (resolve, reject) => {
+        username = username.toLowerCase();
+
+        if (ProfileConfig.storage.enabled) {
+            const storage: Profile = StorageGet(ProfileConfig.storage.keyPrefix.src + username);
+
+            if (storage) {
+                return resolve(storage);
+            }
+        }
+
+        const response = await fetch(`https://www.speedrun.com/api/v1/users/${ username }`, options);
+
+        if (response.status !== 200) {
+            reject();
+        }
+
+        const json = await response.json();
+        const profile: Profile = {
+            id: json.id,
+            name: json.names.international,
+            login: json.names.international,
+            avatar_url: null,
+            color: {
+                light: {
+                    from: json['name-style']?.['color-from']?.light || 'white',
+                    to: json['name-style']?.['color-to']?.light || 'white',
+                },
+                dark: {
+                    from: json['name-style']?.['color-from']?.dark || 'white',
+                    to: json['name-style']?.['color-to']?.dark || 'white',
+                },
+            },
+        };
+
+        if (ProfileConfig.storage.enabled) {
+            StorageSet(ProfileConfig.storage.keyPrefix.src + username, profile);
+        }
+
+        resolve(profile);
+    });
+}
+
+/**
+ * @param {string} username
+ * @param {ProfileHttpOptions} options
+ *
+ * @return {Promise<Profile>}
+ */
+export function ProfileDriverTwitch(
+    username: string,
+    options: ProfileHttpOptions): Promise<Profile>
+{
+    return new Promise(async (resolve, reject) => {
+        username = username.toLowerCase();
+
+        if (ProfileConfig.storage.enabled) {
+            const storage: Profile = StorageGet(ProfileConfig.storage.keyPrefix.twitch + username);
+
+            if (storage) {
+                return resolve(storage);
+            }
+        }
+
+        const response = await fetch(`https://api.twitch.tv/helix/users?login=${ username }`, options);
+
+        if (response.status !== 200) {
+            reject();
+        }
+
+        const json = await response.json();
+        const profile: Profile = {
+            id: json.id,
+            name: json.names.international,
+            login: json.names.international,
+            avatar_url: json.data[0].profile_image_url,
+            color: {
+                light: {
+                    from: 'white',
+                    to: 'white',
+                },
+                dark: {
+                    from: 'white',
+                    to: 'white',
+                },
+            },
+        };
+
+        if (ProfileConfig.storage.enabled) {
+            StorageSet(ProfileConfig.storage.keyPrefix.twitch + username, profile);
+        }
+
+        resolve(profile);
+    });
+}

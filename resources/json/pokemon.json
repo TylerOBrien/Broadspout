@@ -1,0 +1,1018 @@
+{
+    "lugia": {
+        "name": "Lugia",
+        "number": 249
+    },
+    "psyduck": {
+        "name": "Psyduck",
+        "number": 54
+    },
+    "arbok": {
+        "name": "Arbok",
+        "number": 24
+    },
+    "meganium": {
+        "name": "Meganium",
+        "number": 154
+    },
+    "magby": {
+        "name": "Magby",
+        "number": 240
+    },
+    "slugma": {
+        "name": "Slugma",
+        "number": 218
+    },
+    "venasaur": {
+        "name": "Venasaur",
+        "number": 3
+    },
+    "swinub": {
+        "name": "Swinub",
+        "number": 220
+    },
+    "seadra": {
+        "name": "Seadra",
+        "number": 117
+    },
+    "togetic": {
+        "name": "Togetic",
+        "number": 176
+    },
+    "missingno": {
+        "name": "MissingNo",
+        "number": 0
+    },
+    "missingno.": {
+        "name": "MissingNo",
+        "number": 0
+    },
+    "oddish": {
+        "name": "Oddish",
+        "number": 43
+    },
+    "smoochum": {
+        "name": "Smoochum",
+        "number": 238
+    },
+    "articuno": {
+        "name": "Articuno",
+        "number": 144
+    },
+    "raikou": {
+        "name": "Raikou",
+        "number": 243
+    },
+    "poliwhirl": {
+        "name": "Poliwhirl",
+        "number": 61
+    },
+    "natu": {
+        "name": "Natu",
+        "number": 177
+    },
+    "nidoking": {
+        "name": "Nidoking",
+        "number": 34
+    },
+    "machop": {
+        "name": "Machop",
+        "number": 66
+    },
+    "eevee": {
+        "name": "Eevee",
+        "number": 133
+    },
+    "butterfree": {
+        "name": "Butterfree",
+        "number": 12
+    },
+    "spinarak": {
+        "name": "Spinarak",
+        "number": 167
+    },
+    "marill": {
+        "name": "Marill",
+        "number": 183
+    },
+    "igglybuff": {
+        "name": "Igglybuff",
+        "number": 174
+    },
+    "teddiursa": {
+        "name": "Teddiursa",
+        "number": 216
+    },
+    "clefairy": {
+        "name": "Clefairy",
+        "number": 35
+    },
+    "tentacool": {
+        "name": "Tentacool",
+        "number": 72
+    },
+    "dratini": {
+        "name": "Dratini",
+        "number": 147
+    },
+    "houndoom": {
+        "name": "Houndoom",
+        "number": 229
+    },
+    "victreebel": {
+        "name": "Victreebel",
+        "number": 71
+    },
+    "girafarig": {
+        "name": "Girafarig",
+        "number": 203
+    },
+    "politoed": {
+        "name": "Politoed",
+        "number": 186
+    },
+    "mareep": {
+        "name": "Mareep",
+        "number": 179
+    },
+    "typhlosion": {
+        "name": "Typhlosion",
+        "number": 157
+    },
+    "espeon": {
+        "name": "Espeon",
+        "number": 196
+    },
+    "sandshrew": {
+        "name": "Sandshrew",
+        "number": 27
+    },
+    "aerodactyl": {
+        "name": "Aerodactyl",
+        "number": 142
+    },
+    "jumpluff": {
+        "name": "Jumpluff",
+        "number": 189
+    },
+    "zapdos": {
+        "name": "Zapdos",
+        "number": 145
+    },
+    "clefable": {
+        "name": "Clefable",
+        "number": 36
+    },
+    "beedrill": {
+        "name": "Beedrill",
+        "number": 15
+    },
+    "nidoqueen": {
+        "name": "Nidoqueen",
+        "number": 31
+    },
+    "chansey": {
+        "name": "Chansey",
+        "number": 113
+    },
+    "ponyta": {
+        "name": "Ponyta",
+        "number": 77
+    },
+    "drowzee": {
+        "name": "Drowzee",
+        "number": 96
+    },
+    "voltorb": {
+        "name": "Voltorb",
+        "number": 100
+    },
+    "steelix": {
+        "name": "Steelix",
+        "number": 208
+    },
+    "krabby": {
+        "name": "Krabby",
+        "number": 98
+    },
+    "flareon": {
+        "name": "Flareon",
+        "number": 136
+    },
+    "dragonite": {
+        "name": "Dragonite",
+        "number": 149
+    },
+    "caterpie": {
+        "name": "Caterpie",
+        "number": 10
+    },
+    "jynx": {
+        "name": "Jynx",
+        "number": 124
+    },
+    "slowbro": {
+        "name": "Slowbro",
+        "number": 80
+    },
+    "smeargle": {
+        "name": "Smeargle",
+        "number": 235
+    },
+    "charmander": {
+        "name": "Charmander",
+        "number": 4
+    },
+    "wartortle": {
+        "name": "Wartortle",
+        "number": 8
+    },
+    "tyranitar": {
+        "name": "Tyranitar",
+        "number": 248
+    },
+    "ursaring": {
+        "name": "Ursaring",
+        "number": 217
+    },
+    "nidoran": {
+        "name": "Nidoran",
+        "number": 32
+    },
+    "snorlax": {
+        "name": "Snorlax",
+        "number": 143
+    },
+    "snubbull": {
+        "name": "Snubbull",
+        "number": 209
+    },
+    "gengar": {
+        "name": "Gengar",
+        "number": 94
+    },
+    "totodile": {
+        "name": "Totodile",
+        "number": 158
+    },
+    "persian": {
+        "name": "Persian",
+        "number": 53
+    },
+    "sandslash": {
+        "name": "Sandslash",
+        "number": 28
+    },
+    "dragonair": {
+        "name": "Dragonair",
+        "number": 148
+    },
+    "pikachu": {
+        "name": "Pikachu",
+        "number": 25
+    },
+    "gyarados": {
+        "name": "Gyarados",
+        "number": 130
+    },
+    "pineco": {
+        "name": "Pineco",
+        "number": 204
+    },
+    "hitmonlee": {
+        "name": "Hitmonlee",
+        "number": 106
+    },
+    "lickitung": {
+        "name": "Lickitung",
+        "number": 108
+    },
+    "bayleef": {
+        "name": "Bayleef",
+        "number": 153
+    },
+    "shuckle": {
+        "name": "Shuckle",
+        "number": 213
+    },
+    "suicune": {
+        "name": "Suicune",
+        "number": 245
+    },
+    "magcargo": {
+        "name": "Magcargo",
+        "number": 219
+    },
+    "pidgey": {
+        "name": "Pidgey",
+        "number": 16
+    },
+    "seel": {
+        "name": "Seel",
+        "number": 86
+    },
+    "geodude": {
+        "name": "Geodude",
+        "number": 74
+    },
+    "skarmory": {
+        "name": "Skarmory",
+        "number": 227
+    },
+    "delibird": {
+        "name": "Delibird",
+        "number": 225
+    },
+    "azumarill": {
+        "name": "Azumarill",
+        "number": 184
+    },
+    "staryu": {
+        "name": "Staryu",
+        "number": 120
+    },
+    "kabutops": {
+        "name": "Kabutops",
+        "number": 141
+    },
+    "machamp": {
+        "name": "Machamp",
+        "number": 68
+    },
+    "murkrow": {
+        "name": "Murkrow",
+        "number": 198
+    },
+    "phanpy": {
+        "name": "Phanpy",
+        "number": 231
+    },
+    "quagsire": {
+        "name": "Quagsire",
+        "number": 195
+    },
+    "pichu": {
+        "name": "Pichu",
+        "number": 172
+    },
+    "omastar": {
+        "name": "Omastar",
+        "number": 139
+    },
+    "hoppip": {
+        "name": "Hoppip",
+        "number": 187
+    },
+    "unown": {
+        "name": "Unown",
+        "number": 201
+    },
+    "kabuto": {
+        "name": "Kabuto",
+        "number": 140
+    },
+    "vulpix": {
+        "name": "Vulpix",
+        "number": 37
+    },
+    "corsola": {
+        "name": "Corsola",
+        "number": 222
+    },
+    "remoraid": {
+        "name": "Remoraid",
+        "number": 223
+    },
+    "poliwrath": {
+        "name": "Poliwrath",
+        "number": 62
+    },
+    "octillery": {
+        "name": "Octillery",
+        "number": 224
+    },
+    "tentacruel": {
+        "name": "Tentacruel",
+        "number": 73
+    },
+    "onix": {
+        "name": "Onix",
+        "number": 95
+    },
+    "hypno": {
+        "name": "Hypno",
+        "number": 97
+    },
+    "lanturn": {
+        "name": "Lanturn",
+        "number": 171
+    },
+    "exeggutor": {
+        "name": "Exeggutor",
+        "number": 103
+    },
+    "mewtwo": {
+        "name": "Mewtwo",
+        "number": 150
+    },
+    "lapras": {
+        "name": "Lapras",
+        "number": 131
+    },
+    "ariados": {
+        "name": "Ariados",
+        "number": 168
+    },
+    "machoke": {
+        "name": "Machoke",
+        "number": 67
+    },
+    "slowking": {
+        "name": "Slowking",
+        "number": 199
+    },
+    "jolteon": {
+        "name": "Jolteon",
+        "number": 135
+    },
+    "venomoth": {
+        "name": "Venomoth",
+        "number": 49
+    },
+    "starmie": {
+        "name": "Starmie",
+        "number": 121
+    },
+    "sudowoodo": {
+        "name": "Sudowoodo",
+        "number": 185
+    },
+    "vileplume": {
+        "name": "Vileplume",
+        "number": 45
+    },
+    "yanma": {
+        "name": "Yanma",
+        "number": 193
+    },
+    "pinser": {
+        "name": "Pinser",
+        "number": 127
+    },
+    "diglett": {
+        "name": "Diglett",
+        "number": 50
+    },
+    "bulbasaur": {
+        "name": "Bulbasaur",
+        "number": 1
+    },
+    "chikorita": {
+        "name": "Chikorita",
+        "number": 152
+    },
+    "nidorina": {
+        "name": "Nidorina",
+        "number": 30
+    },
+    "haunter": {
+        "name": "Haunter",
+        "number": 93
+    },
+    "xatu": {
+        "name": "Xatu",
+        "number": 178
+    },
+    "fearow": {
+        "name": "Fearow",
+        "number": 22
+    },
+    "blissey": {
+        "name": "Blissey",
+        "number": 242
+    },
+    "shellder": {
+        "name": "Shellder",
+        "number": 90
+    },
+    "sneasel": {
+        "name": "Sneasel",
+        "number": 215
+    },
+    "sentret": {
+        "name": "Sentret",
+        "number": 161
+    },
+    "metapod": {
+        "name": "Metapod",
+        "number": 11
+    },
+    "gloom": {
+        "name": "Gloom",
+        "number": 44
+    },
+    "arcanine": {
+        "name": "Arcanine",
+        "number": 59
+    },
+    "mew": {
+        "name": "Mew",
+        "number": 151
+    },
+    "larvitar": {
+        "name": "Larvitar",
+        "number": 246
+    },
+    "skiploom": {
+        "name": "Skiploom",
+        "number": 188
+    },
+    "hoothoot": {
+        "name": "Hoothoot",
+        "number": 163
+    },
+    "hooh": {
+        "name": "HoOh",
+        "number": 250
+    },
+    "ho-oh": {
+        "name": "HoOh",
+        "number": 250
+    },
+    "gastly": {
+        "name": "Gastly",
+        "number": 92
+    },
+    "muk": {
+        "name": "Muk",
+        "number": 89
+    },
+    "farfetch'd": {
+        "name": "Farfetch'd",
+        "number": 83
+    },
+    "celebi": {
+        "name": "Celebi",
+        "number": 251
+    },
+    "alakazam": {
+        "name": "Alakazam",
+        "number": 65
+    },
+    "blastoise": {
+        "name": "Blastoise",
+        "number": 9
+    },
+    "charmeleon": {
+        "name": "Charmeleon",
+        "number": 5
+    },
+    "weedle": {
+        "name": "Weedle",
+        "number": 13
+    },
+    "feraligatr": {
+        "name": "Feraligatr",
+        "number": 160
+    },
+    "magikarp": {
+        "name": "Magikarp",
+        "number": 129
+    },
+    "electabuzz": {
+        "name": "Electabuzz",
+        "number": 125
+    },
+    "squirtle": {
+        "name": "Squirtle",
+        "number": 7
+    },
+    "ledyba": {
+        "name": "Ledyba",
+        "number": 165
+    },
+    "paris": {
+        "name": "Paris",
+        "number": 46
+    },
+    "quilava": {
+        "name": "Quilava",
+        "number": 156
+    },
+    "omanyte": {
+        "name": "Omanyte",
+        "number": 138
+    },
+    "granbull": {
+        "name": "Granbull",
+        "number": 210
+    },
+    "cyndaquil": {
+        "name": "Cyndaquil",
+        "number": 155
+    },
+    "houndour": {
+        "name": "Houndour",
+        "number": 228
+    },
+    "stantler": {
+        "name": "Stantler",
+        "number": 234
+    },
+    "croconaw": {
+        "name": "Croconaw",
+        "number": 159
+    },
+    "nidorino": {
+        "name": "Nidorino",
+        "number": 33
+    },
+    "gligar": {
+        "name": "Gligar",
+        "number": 207
+    },
+    "bellossom": {
+        "name": "Bellossom",
+        "number": 182
+    },
+    "chinchou": {
+        "name": "Chinchou",
+        "number": 170
+    },
+    "entei": {
+        "name": "Entei",
+        "number": 244
+    },
+    "dunsparce": {
+        "name": "Dunsparce",
+        "number": 206
+    },
+    "bellsprout": {
+        "name": "Bellsprout",
+        "number": 69
+    },
+    "jigglypuff": {
+        "name": "Jigglypuff",
+        "number": 39
+    },
+    "wigglytuff": {
+        "name": "Wigglytuff",
+        "number": 40
+    },
+    "raticate": {
+        "name": "Raticate",
+        "number": 20
+    },
+    "ditto": {
+        "name": "Ditto",
+        "number": 132
+    },
+    "goldeen": {
+        "name": "Goldeen",
+        "number": 118
+    },
+    "mantine": {
+        "name": "Mantine",
+        "number": 226
+    },
+    "tauros": {
+        "name": "Tauros",
+        "number": 128
+    },
+    "spearow": {
+        "name": "Spearow",
+        "number": 21
+    },
+    "tangela": {
+        "name": "Tangela",
+        "number": 114
+    },
+    "pipitar": {
+        "name": "Pipitar",
+        "number": 247
+    },
+    "electrode": {
+        "name": "Electrode",
+        "number": 101
+    },
+    "weezing": {
+        "name": "Weezing",
+        "number": 110
+    },
+    "qwilfish": {
+        "name": "Qwilfish",
+        "number": 211
+    },
+    "dewgong": {
+        "name": "Dewgong",
+        "number": 87
+    },
+    "golem": {
+        "name": "Golem",
+        "number": 76
+    },
+    "wooper": {
+        "name": "Wooper",
+        "number": 194
+    },
+    "magmar": {
+        "name": "Magmar",
+        "number": 126
+    },
+    "abra": {
+        "name": "Abra",
+        "number": 63
+    },
+    "noctowl": {
+        "name": "Noctowl",
+        "number": 164
+    },
+    "zubat": {
+        "name": "Zubat",
+        "number": 41
+    },
+    "seaking": {
+        "name": "Seaking",
+        "number": 119
+    },
+    "magneton": {
+        "name": "Magneton",
+        "number": 82
+    },
+    "mrmime": {
+        "name": "MrMime",
+        "number": 122
+    },
+    "mr.mime": {
+        "name": "MrMime",
+        "number": 122
+    },
+    "mr. mime": {
+        "name": "MrMime",
+        "number": 122
+    },
+    "rhyhorn": {
+        "name": "Rhyhorn",
+        "number": 111
+    },
+    "piloswine": {
+        "name": "Piloswine",
+        "number": 221
+    },
+    "pidgeot": {
+        "name": "Pidgeot",
+        "number": 18
+    },
+    "furret": {
+        "name": "Furret",
+        "number": 162
+    },
+    "marowak": {
+        "name": "Marowak",
+        "number": 105
+    },
+    "hitmontop": {
+        "name": "Hitmontop",
+        "number": 237
+    },
+    "porygon2": {
+        "name": "Porygon2",
+        "number": 233
+    },
+    "growlithe": {
+        "name": "Growlithe",
+        "number": 58
+    },
+    "moltres": {
+        "name": "Moltres",
+        "number": 146
+    },
+    "parasect": {
+        "name": "Parasect",
+        "number": 47
+    },
+    "magnemite": {
+        "name": "Magnemite",
+        "number": 81
+    },
+    "kingler": {
+        "name": "Kingler",
+        "number": 99
+    },
+    "graveler": {
+        "name": "Graveler",
+        "number": 75
+    },
+    "sunkern": {
+        "name": "Sunkern",
+        "number": 191
+    },
+    "kangaskhan": {
+        "name": "Kangaskhan",
+        "number": 115
+    },
+    "ninetails": {
+        "name": "Ninetails",
+        "number": 38
+    },
+    "dodrio": {
+        "name": "Dodrio",
+        "number": 85
+    },
+    "ledian": {
+        "name": "Ledian",
+        "number": 166
+    },
+    "pidgeotto": {
+        "name": "Pidgeotto",
+        "number": 17
+    },
+    "scizor": {
+        "name": "Scizor",
+        "number": 212
+    },
+    "rapidash": {
+        "name": "Rapidash",
+        "number": 78
+    },
+    "tyrogue": {
+        "name": "Tyrogue",
+        "number": 236
+    },
+    "porygon": {
+        "name": "Porygon",
+        "number": 137
+    },
+    "rattata": {
+        "name": "Rattata",
+        "number": 19
+    },
+    "sunflora": {
+        "name": "Sunflora",
+        "number": 192
+    },
+    "ekans": {
+        "name": "Ekans",
+        "number": 23
+    },
+    "manky": {
+        "name": "Manky",
+        "number": 56
+    },
+    "crobat": {
+        "name": "Crobat",
+        "number": 169
+    },
+    "scyther": {
+        "name": "Scyther",
+        "number": 123
+    },
+    "koffing": {
+        "name": "Koffing",
+        "number": 109
+    },
+    "weepinbell": {
+        "name": "Weepinbell",
+        "number": 70
+    },
+    "rhydon": {
+        "name": "Rhydon",
+        "number": 112
+    },
+    "forretress": {
+        "name": "Forretress",
+        "number": 205
+    },
+    "raichu": {
+        "name": "Raichu",
+        "number": 26
+    },
+    "heracross": {
+        "name": "Heracross",
+        "number": 214
+    },
+    "hitmonchan": {
+        "name": "Hitmonchan",
+        "number": 107
+    },
+    "venonat": {
+        "name": "Venonat",
+        "number": 48
+    },
+    "elekid": {
+        "name": "Elekid",
+        "number": 239
+    },
+    "poliwag": {
+        "name": "Poliwag",
+        "number": 60
+    },
+    "kadabra": {
+        "name": "Kadabra",
+        "number": 64
+    },
+    "kakuna": {
+        "name": "Kakuna",
+        "number": 14
+    },
+    "exeggcute": {
+        "name": "Exeggcute",
+        "number": 102
+    },
+    "wobbuffet": {
+        "name": "Wobbuffet",
+        "number": 202
+    },
+    "misdreavus": {
+        "name": "Misdreavus",
+        "number": 200
+    },
+    "grimer": {
+        "name": "Grimer",
+        "number": 88
+    },
+    "doduo": {
+        "name": "Doduo",
+        "number": 84
+    },
+    "charizard": {
+        "name": "Charizard",
+        "number": 6
+    },
+    "cubone": {
+        "name": "Cubone",
+        "number": 104
+    },
+    "vaporean": {
+        "name": "Vaporean",
+        "number": 134
+    },
+    "ampharos": {
+        "name": "Ampharos",
+        "number": 181
+    },
+    "cleffa": {
+        "name": "Cleffa",
+        "number": 173
+    },
+    "cloyster": {
+        "name": "Cloyster",
+        "number": 91
+    },
+    "donphan": {
+        "name": "Donphan",
+        "number": 232
+    },
+    "golduck": {
+        "name": "Golduck",
+        "number": 55
+    },
+    "umbreon": {
+        "name": "Umbreon",
+        "number": 197
+    },
+    "golbat": {
+        "name": "Golbat",
+        "number": 42
+    },
+    "ivysaur": {
+        "name": "Ivysaur",
+        "number": 2
+    },
+    "primeape": {
+        "name": "Primeape",
+        "number": 57
+    },
+    "meowth": {
+        "name": "Meowth",
+        "number": 52
+    },
+    "togepi": {
+        "name": "Togepi",
+        "number": 175
+    },
+    "aipom": {
+        "name": "Aipom",
+        "number": 190
+    },
+    "slowpoke": {
+        "name": "Slowpoke",
+        "number": 79
+    },
+    "kingdra": {
+        "name": "Kingdra",
+        "number": 230
+    },
+    "flaaffy": {
+        "name": "Flaaffy",
+        "number": 180
+    },
+    "horsea": {
+        "name": "Horsea",
+        "number": 116
+    },
+    "dugtrio": {
+        "name": "Dugtrio",
+        "number": 51
+    }
+}
