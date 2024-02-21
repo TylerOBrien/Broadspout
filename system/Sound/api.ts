@@ -2,7 +2,7 @@
  * System Imports
 */
 
-import { CooldownIsActive, CooldownGetSecondsRemaining, CooldownType, CooldownGetResponse, CooldownTypeScalar } from '@system/Cooldown';
+import { CooldownIsActive, CooldownType, CooldownGetResponse } from '@system/Cooldown';
 import { TmiSend } from '@system/Tmi';
 import { QueueMode, QueuePop, QueuePush, QueueType } from '@system/Queue';
 import { User } from '@system/User';
@@ -14,9 +14,8 @@ import { ChronoDurationSeconds } from '@system/Chrono/api';
  * Relative Imports
 */
 
-import { Sound, SoundState } from './types';
+import { Sound } from './types';
 import { SoundConfig } from '@config/Sound';
-import { ControlPanelConfig } from '@config/ControlPanel';
 import { SoundTTSOptions } from '.';
 
 /**
@@ -30,6 +29,7 @@ let _sounds: Record<string, Sound> = {};
 */
 
 /**
+ * @param {string} queueid
  * @param {string} uri
  * @param {number} volume
  * @param {number} delay
@@ -40,77 +40,26 @@ let _sounds: Record<string, Sound> = {};
 function _play(
     uri: string,
     volume: number,
-    onPlaybackFinish: () => void,
-    attempts: number = 0,
-    delay: number = 1000): void
+    onPlaybackStart: () => void,
+    onPlaybackEnd: () => void,
+    queueid?: string,
+    delay?: number): void
 {
-    const fn = (): void => {
-        _audio = document.createElement('audio');
-        _audio.volume = volume;
+    const audio = document.createElement('audio');
 
-        _audio.addEventListener('play', _handlePlaybackStart);
-        _audio.addEventListener('loadeddata', _audio.play);
+    audio.addEventListener('loadeddata', audio.play);
+    audio.addEventListener('play', onPlaybackStart);
 
-        _audio.addEventListener('ended', (): void => {
-            _handlePlaybackEnd();
-            onPlaybackFinish();
-        });
+    audio.addEventListener('ended', (): void => {
+        if (queueid) {
+            QueuePop(queueid, typeof delay === 'number' ? delay : SoundConfig.defaultDelayAfterPlayback);
+        }
 
-        _audio.addEventListener('error', (): void => {
-            if (++attempts < SoundConfig.maxFetchAttempts) {
-                _play(uri, volume, onPlaybackFinish, attempts, delay);
-            } else {
-                _handlePlaybackEnd();
-            }
-        });
-    };
+        setTimeout(onPlaybackEnd, typeof delay === 'number' ? delay : SoundConfig.defaultDelayAfterPlayback);
+    });
 
-    if (attempts && delay) {
-        setTimeout(fn, delay);
-    } else {
-        fn();
-    }
-}
-
-/**
- * @param {string} contents
- * @param {() => void} resolve
- * @param {string} lang
- *
- * @return {void}
- */
-async function _fetchAndPlayTTS(
-    contents: string,
-    resolve: () => void,
-    lang: string = 'en'): Promise<void>
-{
-    const options = {
-        method: 'POST',
-        body: 'contents=' + contents,
-    };
-
-    const response = await fetch(`http://${ ControlPanelConfig.host }/tts?${ lang }=1`, options);
-    const body = await response.text();
-
-    _play(`/tts/${ body }.ogg`, 1.0, resolve);
-}
-
-/**
- * @return {void}
- */
-function _handlePlaybackStart(): void
-{
-    _state = SoundState.Playing;
-}
-
-/**
- * @return {void}
- */
-function _handlePlaybackEnd(): void
-{
-    if (!QueuePop(_queueid, SoundConfig.defaultDelayBetweenSounds)) {
-        _state = SoundState.Idle;
-    }
+    audio.volume = volume;
+    audio.src = uri;
 }
 
 /**
@@ -146,33 +95,34 @@ export function SoundRegister(
 }
 
 /**
+ * @param {User} user The user who triggered the sound.
  * @param {string} name The name of the sound.
+ * @param {QueueMode} mode The queue mode to use.
  *
- * @return {boolean}
+ * @return {Promise<void>}
  */
 export function SoundPlayFile(
     user: User,
     name: string,
-    mode: QueueMode = QueueMode.Enqueue,
-    onPlayStart?: () => void | Promise<void>,
-    onPlayFinish?: () => void | Promise<void>): Promise<void>
+    mode: QueueMode = QueueMode.Enqueue): Promise<void>
 {
     return new Promise((resolve) => {
-        if (CooldownIsActive(user, CooldownType.SoundFile)) {
+        if (user && CooldownIsActive(user, CooldownType.SoundFile)) {
             TmiSend(CooldownGetResponse(user, CooldownType.SoundFile, 'to use another sound.'));
             return resolve();
         }
 
-        QueuePush({
-            mode,
-            type: QueueType.Sound,
-            handler: (queueid) => {
-                _queueid = queueid;
-                _onPlayStart = onPlayStart;
-                _onPlayFinish = onPlayFinish;
-                _play(_sounds[name].uri, _sounds[name].volume, resolve);
-            },
-        });
+        if (mode === QueueMode.Bypass) {
+            _play(_sounds[name].uri, _sounds[name].volume, null, resolve);
+        } else {
+            QueuePush({
+                mode,
+                type: QueueType.Sound,
+                handler: (queueid) => {
+                    _play(_sounds[name].uri, _sounds[name].volume, null, resolve, queueid);
+                },
+            });
+        }
     });
 }
 
@@ -180,20 +130,17 @@ export function SoundPlayFile(
  * @param {User} user
  * @param {string} contents The contents to read aloud using TTS.
  * @param {SoundTTSOptions} options
- * @param {} onPlay
  *
- * @return {boolean}
+ * @return {Promise<void>}
  */
 export function SoundPlayTTS(
     user: User,
     contents: string,
     options?: SoundTTSOptions,
-    mode: QueueMode = QueueMode.Enqueue,
-    onPlayStart?: () => void | Promise<void>,
-    onPlayFinish?: () => void | Promise<void>): Promise<void>
+    mode: QueueMode = QueueMode.Enqueue): Promise<void>
 {
     return new Promise((resolve) => {
-        if (CooldownIsActive(user, CooldownType.SoundFile)) {
+        if (user && CooldownIsActive(user, CooldownType.SoundFile)) {
             TmiSend(CooldownGetResponse(user, CooldownType.SoundFile, 'to use another TTS.'));
             return resolve();
         }
@@ -202,9 +149,6 @@ export function SoundPlayTTS(
             mode,
             type: QueueType.Sound,
             handler: (queueid) => {
-                _queueid = queueid;
-                _onPlayStart = onPlayStart;
-                _onPlayFinish = onPlayFinish;
                 _fetchAndPlayTTS(contents, resolve);
             },
         });
@@ -216,11 +160,7 @@ export function SoundPlayTTS(
  */
 export function SoundSuspend(): void
 {
-    _suspended = true;
-
-    if (_playing) {
-        //
-    }
+    //
 }
 
 /**
@@ -228,11 +168,7 @@ export function SoundSuspend(): void
  */
 export function SoundResume(): void
 {
-    _suspended = false;
-
-    if (_playing) {
-        //
-    }
+    //
 }
 
 /**
@@ -271,14 +207,6 @@ export function SoundIsRecentlyPlayed(
     const secondsRequired = ChronoDurationSeconds(threshold);
 
     return secondsPassed < secondsRequired;
-}
-
-/**
- * @return {SoundState}
- */
-export function SoundGetState(): SoundState
-{
-    return _state;
 }
 
 /**
