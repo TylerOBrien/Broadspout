@@ -80,8 +80,12 @@ export function ChatCommandCreate(
 }
 
 /**
- * @param {string} name
- * @param {CommandEventHandler} handler
+ * Add a new command to be used in Twitch chat.
+ *
+ * @param {string} name The name of the command.
+ * @param {CommandEventHandler} handler The function to call when the command is used.
+ * @param {CommandEventHandlerFilter} include
+ * @param {CommandEventHandlerFilter} exclude
  *
  * @return {void}
  */
@@ -100,8 +104,10 @@ export function CommandRegister(
 }
 
 /**
- * @param {type} CommandEventType
- * @param {CommandEventHandler} handler
+ * Adds a new command event handler.
+ *
+ * @param {type} CommandEventType The type of event to listen for.
+ * @param {CommandEventHandler} handler The function to call when the event happens.
  *
  * @return {void}
  */
@@ -119,6 +125,8 @@ export function CommandAddEventHandler(
 }
 
 /**
+ * Passes the given command object to all appropriate event handlers.
+ *
  * @param {ChatCommand} command The command to dispatch.
  *
  * @return {void}
