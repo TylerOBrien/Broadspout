@@ -34,10 +34,22 @@ const _types: Array<CooldownType> = [
  */
 async function _fetchResponses(): Promise<Array<string>>
 {
-    const response = await fetch(CooldownConfig.uri.responses);
-    const data = await response.json();
+    return new Promise(async (resolve, reject) => {
+        const response = await fetch(CooldownConfig.uri.responses);
+        const data = await response.json();
 
-    return data;
+        if (!Array.isArray(data)) {
+            return reject();
+        }
+
+        for (const item of data) {
+            if (typeof item !== 'string') {
+                return reject();
+            }
+        }
+
+        resolve(data);
+    });
 }
 
 /**
