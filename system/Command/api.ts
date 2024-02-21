@@ -20,7 +20,13 @@ import { User } from '@system/User';
  * Relative Imports
 */
 
-import { ChatCommand, ChatCommandEvent, CommandEventType, CommandExecuteHandler, CommandEventHandlerFilter } from './types';
+import {
+    ChatCommand,
+    ChatCommandEvent,
+    CommandEventType,
+    CommandExecuteHandler,
+    CommandEventHandlerFilter,
+} from './types';
 
 /**
  * Locals
