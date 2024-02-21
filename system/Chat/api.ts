@@ -41,7 +41,7 @@ const _events: Array<ChatEventHandler> = [];
  * @param {boolean} isBot Whether the message was sent by this bot.
  * @param {string} channel The name of the channel the message was sent to.
  *
- * @return {ChatMessage}
+ * @return {ChatMessage} The new message object.
  */
 export function ChatMessageCreate(
     user: User,
@@ -65,10 +65,10 @@ export function ChatMessageCreate(
  * Adds a new chat event handler.
  *
  * @param {ChatEventHandlerCallback} callback The function to call when a chat message is received.
- * @param {ChatEventHandlerFilter} include
- * @param {ChatEventHandlerFilter} exclude
+ * @param {ChatEventHandlerFilter} include The inclusion filter that, if given, must pass for the message to be dispatched.
+ * @param {ChatEventHandlerFilter} exclude The exclusion filter that, if given, must fail for the message to be dispatched.
  *
- * @return {number}
+ * @return {number} The uid for the newly added event handler.
  */
 export function ChatAddEventHandler(
     callback: ChatEventHandlerCallback,
