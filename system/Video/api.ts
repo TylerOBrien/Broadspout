@@ -205,7 +205,10 @@ export function VideoIsRecentlyPlayed(
         return false;
     }
 
-    return DateDiffSeconds(new Date, _videos[name].history.at(-1).from) < ChronoDurationSeconds(threshold);
+    const secondsPassed = DateDiffSeconds(new Date, _videos[name].history.at(-1).from);
+    const secondsRequired = ChronoDurationSeconds(threshold);
+
+    return secondsPassed < secondsRequired;
 }
 
 /**
