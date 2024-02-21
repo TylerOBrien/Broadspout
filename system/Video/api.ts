@@ -108,12 +108,9 @@ export function VideoPlay(
         return;
     }
 
-    switch (mode) {
-    case QueueMode.Bypass:
+    if (mode === QueueMode.Bypass) {
         _playFile(name);
-        break;
-    case QueueMode.UpNext:
-    case QueueMode.Enqueue:
+    } else {
         QueuePush({
             mode,
             type: QueueType.SoundVideo,
@@ -121,7 +118,6 @@ export function VideoPlay(
                 _playFile(name, queueid);
             },
         });
-        break;
     }
 }
 
