@@ -249,13 +249,13 @@ export function SoundExists(
 }
 
 /**
- * Returns true if the specified video both exists and has been played within
+ * Returns true if the specified sound both exists and has been played within
  * the specified duration of time. False otherwise.
  *
- * @param {string} name The name of the video.
- * @param {Duration} threshold The length of time required to have passed for a video to no longer be considered recently played.
+ * @param {string} name The name of the sound.
+ * @param {Duration} threshold The length of time required to have passed for a sound to no longer be considered recently played.
  *
- * @return {boolean} Whether the video is recently played.
+ * @return {boolean} Whether the sound is recently played.
  */
 export function SoundIsRecentlyPlayed(
     name: string,
