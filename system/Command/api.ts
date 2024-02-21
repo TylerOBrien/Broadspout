@@ -95,13 +95,17 @@ export function CommandRegister(
     include?: CommandEventHandlerFilter,
     exclude?: CommandEventHandlerFilter): void
 {
-    name = (name || '').trim();
+    name = (name || '').trim().toLowerCase();
 
     if (!name) {
         return; // TODO: properly handle this error
     }
 
-    _commands[name.toLowerCase()] = {
+    if (name in _commands) {
+        return; // TODO: properly handle this error
+    }
+
+    _commands[name] = {
         handler,
         include,
         exclude,
