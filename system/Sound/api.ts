@@ -212,6 +212,19 @@ export function SoundIsRecentlyPlayed(
 /**
  * @return {Promise<void>}
  */
+export async function SoundReload(): Promise<void>
+{
+    const response = await fetch(SoundConfig.sounds.uri);
+    const data = await response.json();
+
+    if (Array.isArray(data) || typeof data !== 'object') {
+        return;
+    }
+}
+
+/**
+ * @return {Promise<void>}
+ */
 export async function SoundInit(): Promise<void>
 {
     const response = await fetch('/sounds.json');

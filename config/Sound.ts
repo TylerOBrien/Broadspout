@@ -9,7 +9,9 @@ import { Config } from '@system/Config';
 */
 
 export const SoundConfig = {
-    get uri() { return Config('sound-uri', '/json/sounds.json'); },
+    sounds: {
+        get uri() { return Config('sound-uri', '/json/sounds.json'); },
+    },
     get maxFetchAttempts() { return 5; },
     get defaultDelayAfterPlayback() { return 33; },
 };
