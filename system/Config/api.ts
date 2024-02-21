@@ -85,7 +85,7 @@ export function ConfigInit(): Promise<void>
 
             for (const key of ConfigConfig.required) {
                 if (!Config(key)) {
-                    setTimeout(wait, 100);
+                    setTimeout(wait, 50);
                     return;
                 }
             }
