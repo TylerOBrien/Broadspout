@@ -103,7 +103,7 @@ export function CooldownSet(
  * @param {User} user The user to check.
  * @param {CooldownType} type The cooldown type to check for.
  *
- * @return {boolean}
+ * @return {boolean} Whether the cooldown is active.
  */
 export function CooldownIsActive(
     user: User,
