@@ -6,6 +6,7 @@ import { CooldownConfig } from '@config/Cooldown';
 import { Duration } from '@system/Chrono';
 import { ChronoDurationMilliseconds } from '@system/Chrono/api';
 import { User } from '@system/User';
+import { RandomFrom } from '@system/Utility';
 
 /**
  * Relative Imports
@@ -18,6 +19,7 @@ import { Cooldown, CooldownType, CooldownTypeScalar } from './types';
 */
 
 const _cooldowns: Record<string, { [P in CooldownType]?: Cooldown }> = {};
+let _responses: Array<string> = [];
 const _types: Array<CooldownType> = [
     CooldownType.Any,
     CooldownType.Command,
@@ -28,13 +30,24 @@ const _types: Array<CooldownType> = [
 */
 
 /**
+ * @return {Promise<Array<string>>} The responses received.
+ */
+async function _fetchResponses(): Promise<Array<string>>
+{
+    const response = await fetch(CooldownConfig.uri.responses);
+    const data = await response.json();
+
+    return data;
+}
+
+/**
  * Returns a potentially empty array of all cooldowns for the given user
  * matching the given cooldown type.
  *
  * @param {User} user The user to find cooldowns for.
  * @param {CooldownType} type The type of cooldowns to find.
  *
- * @return {Array<Cooldown>}
+ * @return {Array<Cooldown>} The cooldowns that are considered matches.
  */
 function _findCooldownMatches(
     user: User,
@@ -117,7 +130,7 @@ export function CooldownGetResponse(
     suffix: string): string
 {
     const seconds = CooldownGetSecondsRemaining(user, type);
-    const phrase = CooldownGetResponse();
+    const phrase = RandomFrom(_responses);
 
     return `${ user.name }! ${ phrase } Wait ${ seconds } second${ seconds === 1 ? '' : 's' }${ suffix ? ' ' + suffix : '' }`;
 }
@@ -147,4 +160,20 @@ export function CooldownGetSecondsRemaining(
     }
 
     return Math.round((until.getTime() - now.getTime()) / 1000);
+}
+
+/**
+ * @return {Promise<void>}
+ */
+export async function CooldownReload(): Promise<void>
+{
+    _responses = await _fetchResponses();
+}
+
+/**
+ * @return {Promise<void>}
+ */
+export async function CooldownInit(): Promise<void>
+{
+    await CooldownReload();
 }
