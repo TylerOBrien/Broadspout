@@ -6,4 +6,11 @@ export enum GreetState
     Busy = 0x10,
 }
 
+export interface Greeting
+{
+    chat?: string;
+    sound?: string;
+    video?: string;
+}
+
 export type GreetHandler = (user: User) => Promise<void>;

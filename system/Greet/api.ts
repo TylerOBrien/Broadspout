@@ -9,12 +9,13 @@ import { QueueMode, QueuePop, QueuePush, QueueType } from '@system/Queue';
 import { SoundExists, SoundPlayFile } from '@system/Sound';
 import { StorageGet, StorageSet } from '@system/Storage';
 import { User } from '@system/User';
+import { GreetFetchGreetings } from './drivers';
 
 /**
  * Sibling Imports
 */
 
-import { GreetHandler, GreetState } from './types';
+import { Greeting, GreetState } from './types';
 
 /**
  * Locals
@@ -24,7 +25,7 @@ let _state: GreetState = GreetState.Idle;
 let _queue: Array<User> = [];
 let _enabled: boolean = false;
 let _greeted: Array<string> = [];
-let _greetings: Record<string, GreetHandler> = {};
+let _greetings: Record<string, Greeting> = {};
 
 /**
  * Private Functions
@@ -252,8 +253,7 @@ export function GreetDisable(): void
  */
 export async function GreetReload(): Promise<void>
 {
-    const response = await fetch(GreetConfig.greetings.uri);
-    _greetings = await response.json();
+    _greetings = await GreetFetchGreetings();
 }
 
 /**
