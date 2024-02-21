@@ -64,7 +64,7 @@ export function ChatMessageCreate(
 /**
  * Adds a new chat event handler.
  *
- * @param {ChatEventHandlerCallback} callback The function to call when a chat message is received.
+ * @param {ChatEventHandlerCallback} callback The function to call when a chat message is dispatched.
  * @param {ChatEventHandlerFilter} include The inclusion filter that, if given, must pass for the message to be dispatched.
  * @param {ChatEventHandlerFilter} exclude The exclusion filter that, if given, must fail for the message to be dispatched.
  *
