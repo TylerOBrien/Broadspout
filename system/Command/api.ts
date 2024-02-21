@@ -34,8 +34,8 @@ const _commands: Record<string, ChatCommandEvent> = {};
 */
 
 /**
- * @param {CommandEventType} type
- * @param {ChatCommand} command
+ * @param {CommandEventType} type The type of event to dispatch.
+ * @param {ChatCommand} command The command object to pass to the callback(s).
  *
  * @return {void}
  */
@@ -55,11 +55,16 @@ function _dispatchEvent(
 */
 
 /**
- * @param {User} user
- * @param {string} contents
- * @param {string} channel
+ * Returns a new command object.
  *
- * @return {ChatMessage}
+ * @param {string} name The name of the command.
+ * @param {User} user The user who used the command.
+ * @param {ChatUserstate} state The tmi.js user state of who used the command.
+ * @param {string} contents The contents of the message that triggered the command.
+ * @param {boolean} isBot Whether the command was used by this bot.
+ * @param {string} channel The channel the message was sent to.
+ *
+ * @return {ChatMessage} The new command object.
  */
 export function ChatCommandCreate(
     name: string,
