@@ -8,21 +8,21 @@ import { AABB } from '@system/Geometry';
  * Relative Imports
 */
 
-import { BouncingImageItem } from './types';
+import { AnimationItem } from './types';
 
 /**
  * Public Functions
 */
 
 /**
- * @param {BouncingImageItem<ImageTy>} item
+ * @param {AnimationItem<ImageTy>} item
  * @param {AABB} within
  * @param {number} delta
  *
  * @return {void}
  */
-export function TweenAnimationBounce<ImageTy>(
-    item: BouncingImageItem<ImageTy>,
+export function AnimationBounce<ImageTy>(
+    item: AnimationItem<ImageTy>,
     within: AABB,
     delta: number = 1): void
 {
