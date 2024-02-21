@@ -192,7 +192,7 @@ export function GreetHandleMessage(
  *
  * @param {User} user The user to check.
  *
- * @return {boolean}
+ * @return {boolean} Whether the user has a custom greeting defined.
  */
 export function GreetHasCustomGreeting(
     user: User): boolean
@@ -205,7 +205,7 @@ export function GreetHasCustomGreeting(
  *
  * @param {User} user The user to check.
  *
- * @return {boolean}
+ * @return {boolean} Whether the user has already been greeted.
  */
 export function GreetIsGreeted(
     user: User): boolean
@@ -218,7 +218,7 @@ export function GreetIsGreeted(
  *
  * @param {User} user The user to check.
  *
- * @return {boolean}
+ * @return {boolean} Whether the user has a queued greeting.
  */
  export function GreetIsQueued(
     user: User): boolean
@@ -233,6 +233,8 @@ export function GreetIsGreeted(
 }
 
 /**
+ * Enables the triggering of greetings for users.
+ *
  * @return {void}
  */
 export function GreetEnable(): void
@@ -241,6 +243,8 @@ export function GreetEnable(): void
 }
 
 /**
+ * Disables the triggering of greetings for users.
+ *
  * @return {void}
  */
 export function GreetDisable(): void
@@ -257,6 +261,8 @@ export async function GreetReload(): Promise<void>
 }
 
 /**
+ * Prepares the Greet API for usage. Should only be called once.
+ *
  * @return {Promise<void>}
  */
 export async function GreetInit(): Promise<void>
