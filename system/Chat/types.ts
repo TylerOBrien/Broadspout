@@ -9,14 +9,14 @@ import { User } from '@system/User';
 */
 
 export type ChatEventHandlerCallback = (message: ChatMessage) => void | Promise<void>;
-export type ChatEventHandlerRestriction = string | Array<string> | ((message: ChatMessage) => boolean);
+export type ChatEventHandlerFilter = string | Array<string> | ((message: ChatMessage) => boolean);
 
 export interface ChatEventHandler
 {
     uid: number;
     callback: ChatEventHandlerCallback;
-    include?: string | Array<string> | ((message: ChatMessage) => boolean);
-    exclude?: string | Array<string> | ((message: ChatMessage) => boolean);
+    include?: ChatEventHandlerFilter;
+    exclude?: ChatEventHandlerFilter;
 }
 
 export interface ChatParticipants

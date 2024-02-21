@@ -18,7 +18,7 @@ import {
     ChatMessage,
     ChatEventHandler,
     ChatEventHandlerCallback,
-    ChatEventHandlerRestriction,
+    ChatEventHandlerFilter,
 } from './types';
 
 /**
@@ -65,18 +65,21 @@ export function ChatMessageCreate(
  * Adds a new chat event handler.
  *
  * @param {ChatEventHandlerCallback} callback The function to call when a chat message is received.
- * @param {ChatEventHandlerRestriction} restriction
+ * @param {ChatEventHandlerFilter} include
+ * @param {ChatEventHandlerFilter} exclude
  *
  * @return {number}
  */
 export function ChatAddEventHandler(
     callback: ChatEventHandlerCallback,
-    restriction?: ChatEventHandlerRestriction): number
+    include?: ChatEventHandlerFilter,
+    exclude?: ChatEventHandlerFilter): number
 {
     _events.push({
         uid: _uid,
         callback,
-        restriction,
+        include,
+        exclude,
     });
 
     return _uid++;
