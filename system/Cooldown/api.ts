@@ -152,7 +152,7 @@ export function CooldownGetResponse(
  * @param {User} user The user to check the cooldown for.
  * @param {CooldownTypeScalar} type The type of cooldown to check.
  *
- * @return {number}
+ * @return {number} The seconds remaining on the cooldown.
  */
 export function CooldownGetSecondsRemaining(
     user: User,
@@ -173,6 +173,8 @@ export function CooldownGetSecondsRemaining(
 }
 
 /**
+ * Fetches and stores data from external files over an HTTP request.
+ *
  * @return {Promise<void>}
  */
 export async function CooldownReload(): Promise<void>
@@ -181,6 +183,8 @@ export async function CooldownReload(): Promise<void>
 }
 
 /**
+ * Prepares the Cooldown API for usage. Should only be called once.
+ *
  * @return {Promise<void>}
  */
 export async function CooldownInit(): Promise<void>
