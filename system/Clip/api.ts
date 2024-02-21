@@ -121,7 +121,9 @@ async function _handleClipCommand(
 */
 
 /**
- * @return {void}
+ * Prepares the Clip API for usage. Should only be called once.
+ *
+ * @return {Promise<void>}
  */
 export async function ClipInit(): Promise<void>
 {
