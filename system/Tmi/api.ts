@@ -31,6 +31,8 @@ let _client: Client;
 */
 
 /**
+ * Handles chat messages received through the tmi.js library.
+ *
  * @param {string} channel The name of the channel the message was sent to.
  * @param {ChatUserstate} state The Tmi.js state.
  * @param {string} contents The chat message contents.
@@ -56,6 +58,8 @@ function _handleTmiChat(
 }
 
 /**
+ * Handles command messages received through the tmi.js library.
+ *
  * @param {string} channel The name of the channel the message was sent to.
  * @param {ChatUserstate} state The Tmi.js state.
  * @param {string} contents The chat message contents.
@@ -84,10 +88,12 @@ function _handleTmiCommand(
 }
 
 /**
- * @param {string} channel
- * @param {ChatUserstate} state
- * @param {string} contents
- * @param {boolean} self
+ * Handles chat and command messages received through the tmi.js library.
+ *
+ * @param {string} channel The name of the channel the message was sent to.
+ * @param {ChatUserstate} state The Tmi.js state.
+ * @param {string} contents The chat message contents.
+ * @param {boolean} self The flag denoting if this message was from this app/bot.
  *
  * @return {void}
  */
@@ -124,11 +130,13 @@ export function TmiSend(
 }
 
 /**
- * @param {string} username
- * @param {string} password
- * @param {string | Array<string>} channel
+ * Preapres the Tmi API for usage. Should only be called once.
  *
- * @return {Promise<Endpoint>}
+ * @param {string} username The Twitch username to login with.
+ * @param {string} password The Twitch password belonging to the specified username.
+ * @param {string | Array<string>} channel The Twitch channel to connect to.
+ *
+ * @return {Promise<Endpoint>} The IP address and port that was connected to.
  */
 export function TmiInit(
     username: string,
