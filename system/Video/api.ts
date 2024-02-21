@@ -78,10 +78,7 @@ function _createVideoElement(
     queueid?: string): void
 {
     _videos[name].history.push({ from: new Date });
-
-    const video = _createVideoElement(_videos[name]);
-
-    _container.appendChild(video);
+    _container.appendChild(_createVideoElement(_videos[name]));
 }
 
 /**
