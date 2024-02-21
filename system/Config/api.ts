@@ -26,7 +26,7 @@ const _config: { [P in ConfigKey]?: string } = {};
  * @param {ConfigKey} key The key/name of the config value.
  * @param {string} defaultValue The value to return if the config value cannot be found.
  *
- * @return {string}
+ * @return {string} The config value.
  */
 export function Config(
     key: ConfigKey,
@@ -66,6 +66,8 @@ export function Config(
 }
 
 /**
+ * Prepares the Config API for usage. Should only be called once.
+ *
  * Waits for the required config keys to be injected into CSS by OBS. If the
  * keys are not found within 10 seconds then the promise will be rejected.
  *
