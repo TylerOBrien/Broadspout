@@ -178,7 +178,7 @@ export function VideoResume(
  *
  * @param {string} name The name of the video.
  *
- * @return {boolean}
+ * @return {boolean} Whether the video exists.
  */
  export function VideoExists(
     name: string): boolean
@@ -193,7 +193,7 @@ export function VideoResume(
  * @param {string} name The name of the video.
  * @param {Duration} threshold The length of time required to have passed for a video to no longer be considered recently played.
  *
- * @return {boolean}
+ * @return {boolean} Whether the video is recently played.
  */
 export function VideoIsRecentlyPlayed(
     name: string,
