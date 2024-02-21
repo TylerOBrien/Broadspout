@@ -95,7 +95,13 @@ export function CommandRegister(
     include?: CommandEventHandlerFilter,
     exclude?: CommandEventHandlerFilter): void
 {
-    _commands[name] = {
+    name = (name || '').trim();
+
+    if (!name) {
+        return; // TODO: properly handle this error
+    }
+
+    _commands[name.toLowerCase()] = {
         handler,
         include,
         exclude,
