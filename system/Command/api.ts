@@ -5,7 +5,7 @@
 import { ChatUserstate } from 'tmi.js';
 
 /**
- * Config Imports
+ * Config
 */
 
 import { TwitchConfig } from '@config/Twitch';
@@ -20,24 +20,14 @@ import { User } from '@system/User';
  * Relative Imports
 */
 
-import { ChatCommand, CommandEventType, CommandEventHandler } from './types';
-
-/**
- * Types/Interfaces
-*/
-
-interface CommandEvent
-{
-    channel?: string;
-    handler: CommandEventHandler;
-}
+import { ChatCommand, ChatCommandEvent, CommandEventType, CommandExecuteHandler, CommandEventHandlerFilter } from './types';
 
 /**
  * Locals
 */
 
 const _events: { [P in CommandEventType]?: Array<(command: ChatCommand) => void> } = {};
-const _commands: Record<string, CommandEvent> = {};
+const _commands: Record<string, ChatCommandEvent> = {};
 
 /**
  * Private Functions
@@ -92,18 +82,20 @@ export function ChatCommandCreate(
 /**
  * @param {string} name
  * @param {CommandEventHandler} handler
- * @param {string} channel
  *
  * @return {void}
  */
 export function CommandRegister(
     name: string,
-    handler: CommandEventHandler,
-    channel?: string): void
+    handler: CommandExecuteHandler,
+    include?: CommandEventHandlerFilter,
+    exclude?: CommandEventHandlerFilter): void
 {
     _commands[name] = {
         handler,
-        channel: channel || TwitchConfig.channel,
+        include,
+        exclude,
+        channel: TwitchConfig.channel,
     };
 }
 
@@ -115,7 +107,9 @@ export function CommandRegister(
  */
 export function CommandAddEventHandler(
     type: CommandEventType,
-    handler: CommandEventHandler): void
+    handler: CommandExecuteHandler,
+    include?: CommandEventHandlerFilter,
+    exclude?: CommandEventHandlerFilter): void
 {
     if (!(type in _events)) {
         _events[type] = [handler];

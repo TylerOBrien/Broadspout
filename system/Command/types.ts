@@ -30,10 +30,21 @@ export interface ChatCommand
     when: Date;
 }
 
+export type CommandEventHandlerCallback = (command: ChatCommand) => void | Promise<void>;
+export type CommandEventHandlerFilter = string | Array<string> | ((command: ChatCommand) => boolean);
+
 export type CommandHandler = (
     channel: string,
     user: User | ChatUserstate,
     contents?: string,
 ) => void;
 
-export type CommandEventHandler = (command: ChatCommand) => void | Promise<void>;
+export type CommandExecuteHandler = (command: ChatCommand) => void | Promise<void>;
+
+export interface ChatCommandEvent
+{
+    channel: string;
+    handler: CommandExecuteHandler;
+    include?: CommandEventHandlerFilter;
+    exclude?: CommandEventHandlerFilter;
+}
