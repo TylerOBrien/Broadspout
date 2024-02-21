@@ -67,6 +67,14 @@ export function StreamSetTitle(
 }
 
 /**
+ * @return {StreamHttpOptions}
+ */
+export function StreamGetHTTPOptions(): StreamHttpOptions
+{
+    return _options;
+}
+
+/**
  * @return {Promise<void>}
  */
 export async function StreamInit(): Promise<void>
