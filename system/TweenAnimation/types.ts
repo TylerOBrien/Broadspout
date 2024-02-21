@@ -1,18 +1,32 @@
-import { AABB, Extent, Point } from '@system/Geometry';
+/**
+ * Root Imports
+*/
+
+import * as Pixi from 'pixi.js';
+
+/**
+ * System Imports
+*/
+
+import { AABB, Point } from '@system/Geometry';
 import { Image } from '@system/Image';
 
-export enum BouncingImageRenderer
+/**
+ * Types/Interfaces
+*/
+
+export enum AnimationRenderer
 {
     DOM = 'dom',
     Pixi = 'pixi',
 }
 
-export enum TweenAnimationType
+export enum AnimationType
 {
     DVDLogoBounce = 'dvd-logo-bounce',
 }
 
-export interface TweenAnimationProperties
+export interface AnimationProperties
 {
     bounds: AABB;
     scale: Point;
@@ -24,7 +38,7 @@ export interface TweenAnimationProperties
     };
 }
 
-export interface BouncingImageItem<ImageTy>
+export interface AnimationItem<ImageTy>
 {
     id: number;
     image: ImageTy;
@@ -37,12 +51,13 @@ export interface BouncingImageItem<ImageTy>
     };
 }
 
-export interface BouncingImageContainer<ImageTy = Image>
+export interface AnimationContainer
 {
-    name: string
+    name: string;
     x: number;
     y: number;
     width: number;
     height: number;
-    items: Array<BouncingImageItem<ImageTy>>;
+    renderer: AnimationRenderer;
+    items: Array<AnimationItem<Image | Pixi.Sprite>>;
 }
