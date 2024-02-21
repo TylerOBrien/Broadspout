@@ -124,6 +124,16 @@ export function CooldownIsActive(
     return false;
 }
 
+/**
+ * Returns a string intended to be sent to Twitch chat on the condition that
+ * an attempted action was throttled due to an active cooldown.
+ *
+ * @param {User} user The user who performed the cooldown-based action.
+ * @param {CooldownTypeScalar} type The type of cooldown being used.
+ * @param {string} suffix The message contents to append to the end of the generated response.
+ *
+ * @return {string} The response to send to Twitch chat.
+ */
 export function CooldownGetResponse(
     user: User,
     type: CooldownTypeScalar,
