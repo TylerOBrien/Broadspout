@@ -69,17 +69,13 @@ export function StreamSetTitle(
 /**
  * @return {Promise<void>}
  */
-export function StreamInit(): Promise<void>
+export async function StreamInit(): Promise<void>
 {
-    return new Promise(resolve => {
-        _options = {
-            headers: {
-                'Authorization': TwitchConfig.bearer,
-                'Client-Id': TwitchConfig.client,
-                'Content-Type': 'application/json',
-            },
-        };
-
-        resolve();
-    });
+    _options = {
+        headers: {
+            'Authorization': TwitchConfig.bearer,
+            'Client-Id': TwitchConfig.client,
+            'Content-Type': 'application/json',
+        },
+    };
 }
