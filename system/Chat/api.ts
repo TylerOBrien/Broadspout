@@ -113,16 +113,30 @@ export function ChatDispatch(
     message: ChatMessage): void
 {
     for (const event of _events) {
-        if (event.restriction) {
-            if (typeof event.restriction === 'string') {
-                if (event.restriction === message.user.login) {
+        if (event.include) {
+            if (typeof event.include === 'string') {
+                if (event.include !== message.user.login) {
                     continue;
                 }
-            } else if (Array.isArray(event.restriction)) {
-                if (event.restriction.indexOf(message.user.login) !== -1) {
+            } else if (Array.isArray(event.include)) {
+                if (event.include.indexOf(message.user.login) === -1) {
                     continue;
                 }
-            } else if (event.restriction(message)) {
+            } else if (!event.include(message)) {
+                continue;
+            }
+        }
+
+        if (event.exclude) {
+            if (typeof event.exclude === 'string') {
+                if (event.exclude === message.user.login) {
+                    continue;
+                }
+            } else if (Array.isArray(event.exclude)) {
+                if (event.exclude.indexOf(message.user.login) !== -1) {
+                    continue;
+                }
+            } else if (event.exclude(message)) {
                 continue;
             }
         }

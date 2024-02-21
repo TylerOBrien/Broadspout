@@ -15,7 +15,8 @@ export interface ChatEventHandler
 {
     uid: number;
     callback: ChatEventHandlerCallback;
-    restriction?: string | Array<string> | ((message: ChatMessage) => boolean);
+    include?: string | Array<string> | ((message: ChatMessage) => boolean);
+    exclude?: string | Array<string> | ((message: ChatMessage) => boolean);
 }
 
 export interface ChatParticipants
