@@ -3,7 +3,7 @@
 */
 
 import { GreetConfig } from '@config/Greet';
-import { ChatMessage } from '@system/Chat';
+import { ChatAddEventHandler, ChatMessage } from '@system/Chat';
 import { ProfileGet } from '@system/Profile';
 import { QueueMode, QueuePop, QueuePush, QueueType } from '@system/Queue';
 import { SoundExists, SoundPlayFile } from '@system/Sound';
@@ -30,6 +30,22 @@ let _greetings: Record<string, Greeting> = {};
 /**
  * Private Functions
 */
+
+/**
+ * Checks if the user who sent the given message should be greeted and if so
+ * adds that user to the greet queue.
+ *
+ * @param {ChatMessage} message The message to handle.
+ *
+ * @return {void}
+ */
+ export function _handleMessage(
+    message: ChatMessage): void
+{
+    if (_enabled && !GreetIsGreeted(message.user) && !GreetIsQueued(message.user)) {
+        _enqueue(message.user);
+    }
+}
 
 /**
  * @return {void}
@@ -172,22 +188,6 @@ export function GreetUser(
 }
 
 /**
- * Checks if the user who sent the given message should be greeted and if so
- * adds that user to the greet queue.
- *
- * @param {ChatMessage} message The message to handle.
- *
- * @return {void}
- */
-export function GreetHandleMessage(
-    message: ChatMessage): void
-{
-    if (_enabled && !GreetIsGreeted(message.user) && !GreetIsQueued(message.user)) {
-        _enqueue(message.user);
-    }
-}
-
-/**
  * Returns true if the given user has a greeting configured.
  *
  * @param {User} user The user to check.
@@ -275,4 +275,6 @@ export async function GreetInit(): Promise<void>
     }
 
     await GreetReload();
+
+    ChatAddEventHandler(_handleMessage);
 }
