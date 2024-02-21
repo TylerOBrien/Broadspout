@@ -17,6 +17,7 @@ import { User } from '@system/User';
 export enum CommandEventType
 {
     NotFound,
+    Execute,
 }
 
 export interface ChatCommand
