@@ -20,4 +20,5 @@ export interface Sound
     uri: string;
     cooldown: number;
     volume: number;
+    history: Array<Date>;
 }

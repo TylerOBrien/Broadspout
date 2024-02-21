@@ -6,6 +6,9 @@ import { CooldownIsActive, CooldownGetSecondsRemaining, CooldownType, CooldownGe
 import { TmiSend } from '@system/Tmi';
 import { QueueMode, QueuePop, QueuePush, QueueType } from '@system/Queue';
 import { User } from '@system/User';
+import { Duration } from '@system/Chrono';
+import { DateDiffSeconds } from '@system/Utility';
+import { ChronoDurationSeconds } from '@system/Chrono/api';
 
 /**
  * Relative Imports
@@ -138,6 +141,7 @@ export function SoundRegister(
         uri,
         cooldown,
         volume,
+        history: [],
     };
 }
 
@@ -242,6 +246,31 @@ export function SoundExists(
     name: string): boolean
 {
     return (name || '').toLowerCase() in _sounds;
+}
+
+/**
+ * Returns true if the specified video both exists and has been played within
+ * the specified duration of time. False otherwise.
+ *
+ * @param {string} name The name of the video.
+ * @param {Duration} threshold The length of time required to have passed for a video to no longer be considered recently played.
+ *
+ * @return {boolean} Whether the video is recently played.
+ */
+export function SoundIsRecentlyPlayed(
+    name: string,
+    threshold: Duration): boolean
+{
+    name = (name || '').toLowerCase();
+
+    if (!(name in _sounds) || _sounds[name].history.length === 0) {
+        return false;
+    }
+
+    const secondsPassed = DateDiffSeconds(new Date, _sounds[name].history.at(-1));
+    const secondsRequired = ChronoDurationSeconds(threshold);
+
+    return secondsPassed < secondsRequired;
 }
 
 /**
