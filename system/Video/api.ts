@@ -196,7 +196,7 @@ export function VideoIsRecentlyPlayed(
         return false;
     }
 
-    const secondsPassed = DateDiffSeconds(new Date, _videos[name].history.at(-1).from);
+    const secondsPassed = ChronoDateDiffSeconds(new Date, _videos[name].history.at(-1).from);
     const secondsRequired = ChronoDurationSeconds(threshold);
 
     return secondsPassed < secondsRequired;
