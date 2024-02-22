@@ -15,6 +15,7 @@ import { ChronoDurationSeconds } from '@system/Chrono/api';
 */
 
 import { Sound } from './types';
+import { SoundFetchSounds } from './drivers';
 import { SoundConfig } from '@config/Sound';
 import { SoundTTSOptions } from '.';
 
@@ -214,12 +215,7 @@ export function SoundIsRecentlyPlayed(
  */
 export async function SoundReload(): Promise<void>
 {
-    const response = await fetch(SoundConfig.sounds.uri);
-    const data = await response.json();
-
-    if (Array.isArray(data) || typeof data !== 'object') {
-        return;
-    }
+    _sounds = { ..._sounds, ...await SoundFetchSounds() };
 }
 
 /**
@@ -227,6 +223,5 @@ export async function SoundReload(): Promise<void>
  */
 export async function SoundInit(): Promise<void>
 {
-    const response = await fetch('/sounds.json');
-    const data = await response.json();
+    await SoundReload();
 }
