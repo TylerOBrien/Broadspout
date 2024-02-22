@@ -113,7 +113,9 @@ export function SoundPlayFile(
 {
     return new Promise((resolve) => {
         if (user && CooldownIsActive(user, CooldownType.SoundFile)) {
-            TmiSend(CooldownGetResponse(user, CooldownType.SoundFile, 'to use another sound.'));
+            if (SoundConfig.responseEnabled) {
+                TmiSend(CooldownGetResponse(user, CooldownType.SoundFile, 'to use another sound.'));
+            }
             return resolve();
         }
 
@@ -146,7 +148,9 @@ export function SoundPlayTTS(
 {
     return new Promise((resolve) => {
         if (user && CooldownIsActive(user, CooldownType.SoundFile)) {
-            TmiSend(CooldownGetResponse(user, CooldownType.SoundFile, 'to use another TTS.'));
+            if (SoundConfig.responseEnabled) {
+                TmiSend(CooldownGetResponse(user, CooldownType.SoundFile, 'to use another TTS.'));
+            }
             return resolve();
         }
 
