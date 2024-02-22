@@ -107,7 +107,7 @@ export function VideoPlay(
         name = (name || '').toLowerCase();
 
         if (!(name in _videos)) {
-            return;
+            return resolve();
         }
 
         if (VideoConfig.cooldownEnabled && user && CooldownIsActive(user, CooldownType.Video)) {
