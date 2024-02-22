@@ -2,7 +2,7 @@
  * System Imports
 */
 
-import { CooldownIsActive, CooldownGetSecondsRemaining, CooldownType } from '@system/Cooldown';
+import { CooldownIsActive, CooldownGetSecondsRemaining, CooldownType, CooldownGetResponse } from '@system/Cooldown';
 import { TmiSend } from '@system/Tmi';
 import { QueueMode, QueuePop, QueuePush, QueueType } from '@system/Queue';
 import { User } from '@system/User';
@@ -94,32 +94,41 @@ function _createVideoElement(
  * @param {QueueMode} mode The queue mode to use for playback.
  * @param {VideoEventHandler} events The playback event callbacks.
  *
- * @return {void}
+ * @return {Promise<void>}
  */
 export function VideoPlay(
     container: string,
     user: User,
     name: string,
     mode: QueueMode = QueueMode.Enqueue,
-    events?: VideoEventHandler): void
+    events?: VideoEventHandler): Promise<void>
 {
-    name = (name || '').toLowerCase();
+    return new Promise((resolve) => {
+        name = (name || '').toLowerCase();
 
-    if (!(name in _videos)) {
-        return;
-    }
+        if (!(name in _videos)) {
+            return;
+        }
 
-    if (mode === QueueMode.Bypass) {
-        _playFile(container, name);
-    } else {
-        QueuePush({
-            mode,
-            type: QueueType.SoundVideo,
-            handler: (queueid: string): void => {
-                _playFile(container, name, queueid);
-            },
-        });
-    }
+        if (VideoConfig.cooldownEnabled && user && CooldownIsActive(user, CooldownType.Video)) {
+            if (VideoConfig.cooldownResponseEnabled) {
+                TmiSend(CooldownGetResponse(user, CooldownType.Video, 'to play another video.'));
+            }
+            return resolve();
+        }
+
+        if (mode === QueueMode.Bypass) {
+            _playFile(container, name);
+        } else {
+            QueuePush({
+                mode,
+                type: QueueType.SoundVideo,
+                handler: (queueid: string): void => {
+                    _playFile(container, name, queueid);
+                },
+            });
+        }
+    });
 }
 
 /**

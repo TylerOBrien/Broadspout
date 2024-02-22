@@ -15,4 +15,6 @@ export const VideoConfig = {
     get width() { return Config('video-uri', '/json/videos.json'); },
     get height() { return Config('video-uri', '/json/videos.json'); },
     get uri() { return Config('video-uri', '/json/videos.json'); },
+    get cooldownEnabled() { return true; },
+    get cooldownResponseEnabled() { return true; },
 };
