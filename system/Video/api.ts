@@ -127,9 +127,9 @@ export function VideoRegister(
     uri: string): void
 {
     const givenExtension = uri.slice(uri.lastIndexOf('.') + 1).toLowerCase();
-    const index = _validExtensions.indexOf(givenExtension as VideoExtension);
+    const validExtensionIndex = _validExtensions.indexOf(givenExtension as VideoExtension);
 
-    if (index === -1) {
+    if (validExtensionIndex === -1) {
         return; // TODO: handle this error
     }
 
@@ -142,7 +142,7 @@ export function VideoRegister(
     _videos[name] = {
         uri,
         history: [],
-        extension: _validExtensions[index],
+        extension: _validExtensions[validExtensionIndex],
     };
 }
 
