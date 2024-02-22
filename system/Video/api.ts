@@ -75,7 +75,7 @@ function _createVideoElement(
  *
  * @return {void}
  */
- function _playFile(
+function _playFile(
     container: string,
     name: string,
     onPlaybackEnd: () => void,
