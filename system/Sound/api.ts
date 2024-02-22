@@ -1,4 +1,10 @@
 /**
+ * Config
+*/
+
+import { SoundConfig } from '@config/Sound';
+
+/**
  * System Imports
 */
 
@@ -14,10 +20,8 @@ import { ChronoDurationSeconds } from '@system/Chrono/api';
  * Relative Imports
 */
 
-import { Sound } from './types';
+import { Sound, SoundTTSOptions } from './types';
 import { SoundFetchSounds } from './drivers';
-import { SoundConfig } from '@config/Sound';
-import { SoundTTSOptions } from '.';
 
 /**
  * Locals
