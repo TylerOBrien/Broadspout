@@ -79,7 +79,7 @@ function _createVideoElement(
     name: string,
     queueid?: string): void
 {
-    _videos[name].history.push({ from: new Date });
+    _videos[name].history.push(new Date);
     _containers[container].element.appendChild(_createVideoElement(_videos[name]));
 }
 
@@ -227,7 +227,7 @@ export function VideoIsRecentlyPlayed(
         return false;
     }
 
-    const secondsPassed = ChronoDateDiffSeconds(new Date, _videos[name].history.at(-1).from);
+    const secondsPassed = ChronoDateDiffSeconds(new Date, _videos[name].history.at(-1));
     const secondsRequired = ChronoDurationSeconds(threshold);
 
     return secondsPassed < secondsRequired;

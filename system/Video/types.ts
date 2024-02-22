@@ -16,17 +16,11 @@ export interface VideoEventHandler
     onPlaybackEnd: () => void;
 }
 
-export interface VideoPlaybackHistory
-{
-    from: Date;
-    to?: Date;
-}
-
 export interface Video
 {
     uri: string;
     extension: VideoExtension;
-    history: Array<VideoPlaybackHistory>;
+    history: Array<Date>;
     extent?: Extent;
 }
 
