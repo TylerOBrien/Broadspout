@@ -112,7 +112,7 @@ export function SoundPlayFile(
     mode: QueueMode = QueueMode.Enqueue): Promise<void>
 {
     return new Promise((resolve) => {
-        if (user && CooldownIsActive(user, CooldownType.SoundFile)) {
+        if (SoundConfig.cooldownEnabled && user && CooldownIsActive(user, CooldownType.SoundFile)) {
             if (SoundConfig.cooldownResponseEnabled) {
                 TmiSend(CooldownGetResponse(user, CooldownType.SoundFile, 'to use another sound.'));
             }
@@ -147,7 +147,7 @@ export function SoundPlayTTS(
     mode: QueueMode = QueueMode.Enqueue): Promise<void>
 {
     return new Promise((resolve) => {
-        if (user && CooldownIsActive(user, CooldownType.SoundFile)) {
+        if (SoundConfig.cooldownEnabled && user && CooldownIsActive(user, CooldownType.SoundFile)) {
             if (SoundConfig.cooldownResponseEnabled) {
                 TmiSend(CooldownGetResponse(user, CooldownType.SoundFile, 'to use another TTS.'));
             }
