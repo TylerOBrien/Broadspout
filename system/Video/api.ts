@@ -35,7 +35,8 @@ let _validExtensions: Array<VideoExtension> = ['mp4', 'm4v', 'mkv', 'webm'];
  * @return {HTMLVideoElement}
  */
 function _createVideoElement(
-    from: Video): HTMLVideoElement
+    from: Video,
+    onPlaybackEnd: () => void): HTMLVideoElement
 {
     const video = document.createElement('video');
     const source = document.createElement('source');
@@ -51,7 +52,7 @@ function _createVideoElement(
         break;
     }
 
-    video.addEventListener('ended', _handleEndPlay);
+    video.addEventListener('ended', onPlaybackEnd);
     video.addEventListener('error', _handleEndPlay);
     video.addEventListener('loadeddata', _handleLoaded);
 
@@ -82,7 +83,9 @@ function _playFile(
     queueid?: string): void
 {
     _videos[name].history.push(new Date);
-    _containers[container].element.appendChild(_createVideoElement(_videos[name]));
+    _containers[container].element.appendChild(
+        _createVideoElement(_videos[name], onPlaybackEnd)
+    );
 }
 
 /**
