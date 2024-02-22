@@ -26,6 +26,7 @@ import { SoundFetchSounds } from './drivers';
 */
 
 let _sounds: Record<string, Sound> = {};
+let _playing: Array<HTMLAudioElement> = [];
 
 /**
  * Private Functions
@@ -50,10 +51,14 @@ function _play(
 {
     const audio = document.createElement('audio');
 
+    _playing.push(audio);
+
     audio.addEventListener('loadeddata', audio.play);
     audio.addEventListener('play', onPlaybackStart);
 
     audio.addEventListener('ended', (): void => {
+        _playing.splice(_playing.indexOf(audio), 1);
+
         if (queueid) {
             QueuePop(queueid, typeof delay === 'number' ? delay : SoundConfig.defaultDelayAfterPlayback);
         }
@@ -165,17 +170,21 @@ export function SoundPlayTTS(
 /**
  * @return {void}
  */
-export function SoundSuspend(): void
+export function SoundSuspendAll(): void
 {
-    //
+    for (const audio of _playing) {
+        audio.pause();
+    }
 }
 
 /**
  * @return {void}
  */
-export function SoundResume(): void
+export function SoundResumeAll(): void
 {
-    //
+    for (const audio of _playing) {
+        audio.play();
+    }
 }
 
 /**
