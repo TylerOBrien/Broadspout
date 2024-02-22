@@ -13,13 +13,15 @@ import { ChronoDateDiffSeconds, ChronoDurationSeconds, Duration } from '@system/
  * Relative Imports
 */
 
-import { Video, VideoEventHandler, VideoExtension } from './types';
+import { Video, VideoContainer, VideoEventHandler, VideoExtension } from './types';
+import { AABB } from '@system/Geometry';
 
 /**
  * Locals
 */
 
-let _container: HTMLDivElement;
+let _base: HTMLDivElement;
+let _containers: Record<string, VideoContainer> = {};
 let _videos: Record<string, Video> = {};
 let _validExtensions: Array<VideoExtension> = ['mp4', 'm4v', 'mkv', 'webm'];
 
@@ -66,17 +68,19 @@ function _createVideoElement(
 /**
  * Plays the video identified by the given name.
  *
+ * @param {string} container The name of the container to add the video to.
  * @param {string} name The name of the video to play.
  * @param {string} queueid The unique id for this video in the queue.
  *
  * @return {void}
  */
  function _playFile(
+    container: string,
     name: string,
     queueid?: string): void
 {
     _videos[name].history.push({ from: new Date });
-    _container.appendChild(_createVideoElement(_videos[name]));
+    _containers[container].element.appendChild(_createVideoElement(_videos[name]));
 }
 
 /**
@@ -84,6 +88,7 @@ function _createVideoElement(
 */
 
 /**
+ * @param {string} container The name of the container to add the video to.
  * @param {User} user The user who requested the video to be played.
  * @param {string} name The name of the video.
  * @param {QueueMode} mode The queue mode to use for playback.
@@ -92,6 +97,7 @@ function _createVideoElement(
  * @return {void}
  */
 export function VideoPlay(
+    container: string,
     user: User,
     name: string,
     mode: QueueMode = QueueMode.Enqueue,
@@ -104,13 +110,13 @@ export function VideoPlay(
     }
 
     if (mode === QueueMode.Bypass) {
-        _playFile(name);
+        _playFile(container, name);
     } else {
         QueuePush({
             mode,
             type: QueueType.SoundVideo,
             handler: (queueid: string): void => {
-                _playFile(name, queueid);
+                _playFile(container, name, queueid);
             },
         });
     }
@@ -143,6 +149,31 @@ export function VideoRegister(
         uri,
         history: [],
         extension: _validExtensions[validExtensionIndex],
+    };
+}
+
+/**
+ * @param {string} name The name to use for identifying the video.
+ * @param {AABB} bounds The width/height/x/y bounds of the container.
+ *
+ * @return {void}
+ */
+export function VideoRegisterContainer(
+    name: string,
+    bounds: AABB): void
+{
+    const element = document.createElement('div');
+
+    element.style.position = 'absolute';
+    element.style.width = `${ bounds.w }px`;
+    element.style.height = `${ bounds.h }px`;
+    element.style.transform = `translate(${ bounds.x }px, ${ bounds.y }px)`;
+
+    _base.appendChild(element);
+    _containers[name] = {
+        element,
+        bounds,
+        videos: {},
     };
 }
 
@@ -207,12 +238,11 @@ export function VideoIsRecentlyPlayed(
  */
 export async function VideoInit(): Promise<void>
 {
-    _container = document.createElement('div');
-    _container.id = VideoConfig.elementId;
-    _container.style.position = 'absolute';
-    _container.style.width = `${ VideoConfig.width }px`;
-    _container.style.height = `${ VideoConfig.height }px`;
-    _container.style.transform = `translate(${ VideoConfig.y }px, ${ VideoConfig.y }px)`;
+    _base = document.createElement('div');
+    _base.id = VideoConfig.elementId;
+    _base.style.position = 'absolute';
+    _base.style.width = '100vw';
+    _base.style.height = '100vh';
 
-    document.body.appendChild(_container);
+    document.body.appendChild(_base);
 }

@@ -2,7 +2,7 @@
  * System
 */
 
-import { Extent } from '@system/Geometry';
+import { AABB, Extent } from '@system/Geometry';
 
 /**
  * Types/Interfaces
@@ -28,4 +28,11 @@ export interface Video
     extension: VideoExtension;
     history: Array<VideoPlaybackHistory>;
     extent?: Extent;
+}
+
+export interface VideoContainer
+{
+    element: HTMLDivElement;
+    bounds: AABB;
+    videos: Record<string, Video>;
 }
