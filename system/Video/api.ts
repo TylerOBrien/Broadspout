@@ -70,6 +70,7 @@ function _createVideoElement(
  *
  * @param {string} container The name of the container to add the video to.
  * @param {string} name The name of the video to play.
+ * @param {() => void} onPlaybackEnd
  * @param {string} queueid The unique id for this video in the queue.
  *
  * @return {void}
@@ -77,6 +78,7 @@ function _createVideoElement(
  function _playFile(
     container: string,
     name: string,
+    onPlaybackEnd: () => void,
     queueid?: string): void
 {
     _videos[name].history.push(new Date);
@@ -118,13 +120,13 @@ export function VideoPlay(
         }
 
         if (mode === QueueMode.Bypass) {
-            _playFile(container, name);
+            _playFile(container, name, resolve);
         } else {
             QueuePush({
                 mode,
                 type: QueueType.SoundVideo,
                 handler: (queueid: string): void => {
-                    _playFile(container, name, queueid);
+                    _playFile(container, name, resolve, queueid);
                 },
             });
         }
