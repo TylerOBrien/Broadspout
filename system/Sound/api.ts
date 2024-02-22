@@ -113,7 +113,7 @@ export function SoundPlayFile(
 {
     return new Promise((resolve) => {
         if (user && CooldownIsActive(user, CooldownType.SoundFile)) {
-            if (SoundConfig.responseEnabled) {
+            if (SoundConfig.cooldownResponseEnabled) {
                 TmiSend(CooldownGetResponse(user, CooldownType.SoundFile, 'to use another sound.'));
             }
             return resolve();
@@ -148,7 +148,7 @@ export function SoundPlayTTS(
 {
     return new Promise((resolve) => {
         if (user && CooldownIsActive(user, CooldownType.SoundFile)) {
-            if (SoundConfig.responseEnabled) {
+            if (SoundConfig.cooldownResponseEnabled) {
                 TmiSend(CooldownGetResponse(user, CooldownType.SoundFile, 'to use another TTS.'));
             }
             return resolve();
