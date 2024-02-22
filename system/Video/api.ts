@@ -126,16 +126,16 @@ export function VideoRegister(
     name: string,
     uri: string): void
 {
+    name = (name || '').toLowerCase();
+
+    if (!name || name in _videos) {
+        return; // TODO: handle this error
+    }
+
     const givenExtension = uri.slice(uri.lastIndexOf('.') + 1).toLowerCase();
     const validExtensionIndex = _validExtensions.indexOf(givenExtension as VideoExtension);
 
     if (validExtensionIndex === -1) {
-        return; // TODO: handle this error
-    }
-
-    name = (name || '').toLowerCase();
-
-    if (!name || name in _videos) {
         return; // TODO: handle this error
     }
 
