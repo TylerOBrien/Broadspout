@@ -57,21 +57,6 @@ export function RandomFrom<Ty>(
 }
 
 /**
- * Returns the difference between the two given dates in seconds.
- *
- * @param {Date} first The first date.
- * @param {Date} second The second date.
- *
- * @return {number}
- */
-export function DateDiffSeconds(
-    first: Date,
-    second: Date): number
-{
-    return Math.abs((first ? first.getTime() : 0) - (second ? second.getTime() : 0));
-}
-
-/**
  * Formats the given duration into a readable timestamp.
  *
  * @param {number} seconds

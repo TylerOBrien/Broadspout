@@ -12,9 +12,7 @@ import { CooldownIsActive, CooldownType, CooldownGetResponse } from '@system/Coo
 import { TmiSend } from '@system/Tmi';
 import { QueueMode, QueuePop, QueuePush, QueueType } from '@system/Queue';
 import { User } from '@system/User';
-import { Duration } from '@system/Chrono';
-import { DateDiffSeconds } from '@system/Utility';
-import { ChronoDurationSeconds } from '@system/Chrono/api';
+import { ChronoDateDiffSeconds, ChronoDurationSeconds, Duration } from '@system/Chrono';
 
 /**
  * Relative Imports
@@ -212,7 +210,7 @@ export function SoundIsRecentlyPlayed(
         return false;
     }
 
-    const secondsPassed = DateDiffSeconds(new Date, _sounds[name].history.at(-1));
+    const secondsPassed = ChronoDateDiffSeconds(new Date, _sounds[name].history.at(-1));
     const secondsRequired = ChronoDurationSeconds(threshold);
 
     return secondsPassed < secondsRequired;

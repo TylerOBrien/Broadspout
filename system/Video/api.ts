@@ -7,9 +7,7 @@ import { TmiSend } from '@system/Tmi';
 import { QueueMode, QueuePop, QueuePush, QueueType } from '@system/Queue';
 import { User } from '@system/User';
 import { VideoConfig } from '@config/Video';
-import { Duration } from '@system/Chrono';
-import { ChronoDurationSeconds } from '@system/Chrono/api';
-import { DateDiffSeconds } from '@system/Utility';
+import { ChronoDateDiffSeconds, ChronoDurationSeconds, Duration } from '@system/Chrono';
 
 /**
  * Relative Imports

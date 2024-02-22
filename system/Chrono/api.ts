@@ -9,6 +9,21 @@ import { Duration, DurationType } from './types';
 */
 
 /**
+ * Returns the difference between the two given dates in seconds.
+ *
+ * @param {Date} first The first date.
+ * @param {Date} second The second date.
+ *
+ * @return {number}
+ */
+export function ChronoDateDiffSeconds(
+    first: Date,
+    second: Date): number
+{
+    return Math.abs((first ? first.getTime() : 0) - (second ? second.getTime() : 0));
+}
+
+/**
  * Returns the given duration represented as milliseconds.
  *
  * @param {Duration} duration The duration to convert.
