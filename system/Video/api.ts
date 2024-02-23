@@ -115,8 +115,14 @@ function _playFile(
         const video = _createVideoElement(container, _videos[name], resolve, events, queueid);
         const source = video.firstChild as HTMLSourceElement;
         const now = new Date;
+        const playback = {
+            video: _videos[name],
+            element: video,
+            when: now,
+            state: VideoPlaybackState.Loading,
+        };
 
-        _playing.push({ video: _videos[name], element: video, when: now, state: VideoPlaybackState.Loading });
+        _playing.push(playback);
         _videos[name].history.push(new Date);
         _containers[container].element.appendChild(video);
 
