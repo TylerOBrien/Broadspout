@@ -54,7 +54,7 @@ function _createVideoElement(
 
     video.addEventListener('loadeddata', (): void => {
         if (events?.onPlaybackStart) {
-            events.onPlaybackStart();
+            events.onPlaybackStart(video);
         }
 
         video.play();
@@ -62,7 +62,7 @@ function _createVideoElement(
 
     video.addEventListener('ended', (): void => {
         if (events?.onPlaybackEnd) {
-            events.onPlaybackEnd();
+            events.onPlaybackEnd(video);
         }
     });
 
@@ -92,13 +92,13 @@ function _playFile(
     events?: VideoEventHandler,
     queueid?: string): void
 {
+    const video = _createVideoElement(_videos[name], events);
+
     _videos[name].history.push(new Date);
-    _containers[container].element.appendChild(
-        _createVideoElement(_videos[name], events)
-    );
+    _containers[container].element.appendChild(video);
 
     if (events?.onVisible) {
-        events.onVisible();
+        events.onVisible(video);
     }
 }
 
