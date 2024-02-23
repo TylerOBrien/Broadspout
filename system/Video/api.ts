@@ -71,6 +71,15 @@ function _createVideoElement(
 
         _containers[container].element.removeChild(video);
 
+        let index = _playing.length;
+
+        while (index--) {
+            if (_playing[index].element === video) {
+                _playing.splice(index, 1);
+                break;
+            }
+        }
+
         if (queueid) {
             QueuePop(queueid);
         }
