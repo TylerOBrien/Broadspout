@@ -70,8 +70,6 @@ function _createVideoElement(
     video.setAttribute('width', (from.extent?.w || _containers[container].bounds.w).toString());
     video.setAttribute('height', (from.extent?.h || _containers[container].bounds.h).toString());
 
-    source.setAttribute('src', from.uri);
-
     video.appendChild(source);
 
     return video;
@@ -94,6 +92,7 @@ function _playFile(
     queueid?: string): void
 {
     const video = _createVideoElement(container, _videos[name], events);
+    const source = video.firstChild as HTMLSourceElement;
 
     _videos[name].history.push(new Date);
     _containers[container].element.appendChild(video);
@@ -101,6 +100,8 @@ function _playFile(
     if (events?.onVisible) {
         events.onVisible(video);
     }
+
+    source.setAttribute('src', _videos[name].uri);
 }
 
 /**
