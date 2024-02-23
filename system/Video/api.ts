@@ -13,7 +13,7 @@ import { ChronoDateDiffSeconds, ChronoDurationSeconds, Duration } from '@system/
  * Relative Imports
 */
 
-import { Video, VideoContainer, VideoEventHandler, VideoExtension } from './types';
+import { Video, VideoContainer, VideoEventHandler, VideoExtension, VideoPlayback } from './types';
 import { AABB } from '@system/Geometry';
 
 /**
@@ -23,6 +23,7 @@ import { AABB } from '@system/Geometry';
 let _base: HTMLDivElement;
 let _containers: Record<string, VideoContainer> = {};
 let _videos: Record<string, Video> = {};
+let _playing: Array<VideoPlayback> = [];
 let _validExtensions: Array<VideoExtension> = ['mp4', 'm4v', 'mkv', 'webm'];
 
 /**
@@ -104,7 +105,9 @@ function _playFile(
     return new Promise((resolve) => {
         const video = _createVideoElement(container, _videos[name], resolve, events, queueid);
         const source = video.firstChild as HTMLSourceElement;
+        const now = new Date;
 
+        _playing.push({ video: _videos[name], element: video, when: now });
         _videos[name].history.push(new Date);
         _containers[container].element.appendChild(video);
 

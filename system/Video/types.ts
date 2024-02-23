@@ -25,6 +25,13 @@ export interface Video
     extent?: Extent;
 }
 
+export interface VideoPlayback
+{
+    video: Video;
+    element: HTMLVideoElement;
+    when: Date;
+}
+
 export interface VideoContainer
 {
     element: HTMLDivElement;
