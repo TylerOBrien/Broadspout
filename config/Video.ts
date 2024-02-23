@@ -10,6 +10,7 @@ import { Config } from '@system/Config';
 
 export const VideoConfig = {
     get elementId() { return 'videos'; },
+    get host() { return 'http://127.0.0.1'; },
     get x() { return Config('video-uri', '/json/videos.json'); },
     get y() { return Config('video-uri', '/json/videos.json'); },
     get width() { return Config('video-uri', '/json/videos.json'); },
