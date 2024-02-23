@@ -14,7 +14,7 @@ import { Duration, DurationType } from './types';
  * @param {Date} first The first date.
  * @param {Date} second The second date.
  *
- * @return {number}
+ * @return {number} The delta of the two given dates in seconds.
  */
 export function ChronoDateDiffSeconds(
     first: Date,
@@ -28,7 +28,7 @@ export function ChronoDateDiffSeconds(
  *
  * @param {Duration} duration The duration to convert.
  *
- * @return {number}
+ * @return {number} The given duration in milliseconds.
  */
 export function ChronoDurationMilliseconds(
     duration: Duration): number
@@ -46,7 +46,7 @@ export function ChronoDurationMilliseconds(
  *
  * @param {Duration} duration The duration to convert.
  *
- * @return {number}
+ * @return {number} The given duration in seconds.
  */
  export function ChronoDurationSeconds(
     duration: Duration): number
