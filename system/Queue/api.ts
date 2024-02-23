@@ -89,16 +89,6 @@ function _trigger(
 export function QueuePush(
     options: QueueOptions): string
 {
-    // Create new queue object
-
-    const id = (++_uid).toString(16);
-    const item: QueueItem = {
-        id,
-        type: options.type,
-        handler: options.handler,
-        state: QueueState.Idle,
-    };
-
     // Determine how many conflicting items (as "steps") will exist before this
     // new queue object after it is inserted
 
@@ -117,6 +107,16 @@ export function QueuePush(
     if (options.mode === QueueMode.Reject && steps !== (_queue.length + 1)) {
         return null;
     }
+
+    // Create new queue object
+
+    const id = (++_uid).toString(16);
+    const item: QueueItem = {
+        id,
+        type: options.type,
+        handler: options.handler,
+        state: QueueState.Idle,
+    };
 
     // Insert queue object at the specified position
 
