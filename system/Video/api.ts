@@ -133,13 +133,13 @@ export function VideoPlay(
         }
 
         if (mode === QueueMode.Bypass) {
-            _playFile(container, name, resolve);
+            _playFile(container, name, events);
         } else {
             QueuePush({
                 mode,
                 type: QueueType.SoundVideo,
                 handler: (queueid: string): void => {
-                    _playFile(container, name, resolve, queueid);
+                    _playFile(container, name, events, queueid);
                 },
             });
         }
