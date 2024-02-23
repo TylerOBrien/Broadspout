@@ -3,6 +3,7 @@ export enum QueueMode
     Enqueue,
     UpNext,
     Bypass,
+    Reject,
 }
 
 export enum QueueState
