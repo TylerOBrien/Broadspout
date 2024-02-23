@@ -57,26 +57,6 @@ export function RandomFrom<Ty>(
 }
 
 /**
- * Formats the given duration into a readable timestamp.
- *
- * @param {number} seconds
- *
- * @return {number}
- */
-export function SecondsToTimeString(
-    seconds: number,
-    showms: boolean = true): string
-{
-    const str = seconds.toString();
-    const hr  = Math.floor(seconds / 60 / 60);
-    const min = Math.floor(seconds / 60 % 60);
-    const sec = Math.floor(seconds % 60);
-    const ms  = str.indexOf('.') === -1 ? 0 : parseInt(str.slice(str.indexOf('.') + 1));
-
-    return `${ hr === 0 ? '' : `${ hr }h ` }${ min === 0 ? '' : `${ min }m ` }${ sec < 10 ? '0' : '' }${ sec }s ${ showms ? ms : '' }${ showms && ms < 10 ? '0' : '' }${ showms ? `${ ms < 100 ? '0' : '' }ms` : '' }`;
-}
-
-/**
  * Returns true if the given ASCII key code is for an alphanumeric character.
  *
  * @param {number} charCode The code for the ASCII character.

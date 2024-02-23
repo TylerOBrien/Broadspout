@@ -58,3 +58,29 @@ export function ChronoDurationMilliseconds(
         return duration.value;
     }
 }
+
+/**
+ * Formats the given duration into a readable timestamp.
+ *
+ * @param {number} seconds The number of seconds to format.
+ * @param {boolean} showms
+ *
+ * @return {string} The formatted string.
+ */
+export function ChronoSecondsToTimeString(
+    seconds: number,
+    showms: boolean = true): string
+{
+    const str = seconds.toString();
+    const hr  = Math.floor(seconds / 60 / 60);
+    const min = Math.floor(seconds / 60 % 60);
+    const sec = Math.floor(seconds % 60);
+    const ms  = str.indexOf('.') === -1 ? 0 : parseInt(str.slice(str.indexOf('.') + 1));
+
+    return `${ hr  === 0 ? '' : `${hr}h ` }` +
+           `${ min === 0 ? '' : `${min}m ` }` +
+           `${ sec === 0 ? '' : `${sec}s ` }` +
+           showms
+               ? `${ ms }${ ms < 10 ? '0' : '' }${ ms < 100 ? '0' : '' }`
+               : '';
+}
