@@ -35,6 +35,7 @@ let _validExtensions: Array<VideoExtension> = ['mp4', 'm4v', 'mkv', 'webm'];
  * @return {HTMLVideoElement}
  */
 function _createVideoElement(
+    container: string,
     from: Video,
     events?: VideoEventHandler): HTMLVideoElement
 {
@@ -66,8 +67,8 @@ function _createVideoElement(
         }
     });
 
-    video.setAttribute('width', (from.extent?.w || VideoConfig.width).toString());
-    video.setAttribute('height', (from.extent?.h || VideoConfig.height).toString());
+    video.setAttribute('width', (from.extent?.w || _containers[container].bounds.w).toString());
+    video.setAttribute('height', (from.extent?.h || _containers[container].bounds.h).toString());
 
     source.setAttribute('src', from.uri);
 
@@ -92,7 +93,7 @@ function _playFile(
     events?: VideoEventHandler,
     queueid?: string): void
 {
-    const video = _createVideoElement(_videos[name], events);
+    const video = _createVideoElement(container, _videos[name], events);
 
     _videos[name].history.push(new Date);
     _containers[container].element.appendChild(video);
