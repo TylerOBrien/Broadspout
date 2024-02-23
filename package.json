@@ -27,6 +27,7 @@
         "sass-loader": "^13.0.0",
         "tmi.js": "^1.8.5",
         "ts-loader": "^9.3.1",
+        "tweenjs": "^1.0.2",
         "webpack": "^5.73.0",
         "webpack-cli": "^4.10.0",
         "webpack-dev-middleware": "^5.3.3",
