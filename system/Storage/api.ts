@@ -113,11 +113,11 @@ export function StorageRecordAdd<Ty>(
 }
 
 /**
- * @return {void}
+ * @return {Promise<Ty>}
  */
-export function StorageGet<Ty>(
+export async function StorageGet<Ty>(
     key: string,
-    defaultValue: Ty = null): Ty
+    defaultValue: Ty = null): Promise<Ty>
 {
     const item = localStorage.getItem(key);
 
@@ -129,11 +129,11 @@ export function StorageGet<Ty>(
 }
 
 /**
- * @return {void}
+ * @return {Promise<void>}
  */
-export function StorageSet<Ty>(
+export async function StorageSet<Ty>(
     key: string,
-    data: Ty): void
+    data: Ty): Promise<void>
 {
     localStorage.setItem(key, JSON.stringify(data));
 }
