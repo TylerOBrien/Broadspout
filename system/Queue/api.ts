@@ -10,11 +10,6 @@ import { QueueItem, QueueMode, QueueState, QueueType, QueueOptions } from './typ
 
 let _uid: number = 0;
 let _queue: Array<QueueItem> = [];
-let _conflicts: Record<QueueType, Array<QueueType>> = {
-    [QueueType.Sound]:      [QueueType.Sound, QueueType.SoundVideo],
-    [QueueType.Video]:      [QueueType.Video, QueueType.SoundVideo],
-    [QueueType.SoundVideo]: [QueueType.Sound, QueueType.Sound, QueueType.SoundVideo],
-};
 
 /**
  * Private Functions
@@ -59,20 +54,8 @@ function _isIdle(
 function _trigger(
     index: number): void
 {
-    // Execute the queue item.
-
     _queue[index].state = QueueState.Active;
     _queue[index].handler(_queue[index].id);
-
-    // Check if the queue item that immediately follows the specified item has
-    // a conflict. If it does not then also execute that one.
-
-    // TODO: make this check all entries that are ahead of this one for conflicts
-    // If no items ahead of this conflict then it should trigger.
-
-    if (_queue.length > 1 && _isIdle(_queue[index + 1]) && !_isConflict(_queue[index], _queue[index + 1])) {
-        _trigger(index + 1);
-    }
 }
 
 /**
@@ -89,15 +72,15 @@ function _trigger(
 export function QueuePush(
     options: QueueOptions): string
 {
-    // Determine how many conflicting items (as "steps") will exist before this
-    // new queue object after it is inserted
+    // Count items (as "steps") in the queue until a conflict is found
 
     let index = _queue.length;
     let steps = 0;
 
     while (index--) {
         steps++;
-        if (_conflicts[options.type].indexOf(_queue[index].type) !== -1) {
+
+        if (options.type & _queue[index].type) {
             break;
         }
     }
@@ -139,7 +122,7 @@ export function QueuePush(
     case 1: // Length of 1 means this is the only item so it cannot have a conflict.
         _trigger(0);
         break;
-    case 2: // Length of 2 means this may have been added while a non-conflicting item is currently active.
+    case 2: // Length of 2 means this may have been added while a single non-conflicting item is currently active.
         if (!_isConflict(_queue[0], _queue[1])) {
             _trigger(1);
         }
@@ -150,49 +133,64 @@ export function QueuePush(
 }
 
 /**
- * Removes the specified queue item from the queue. If no item is specified then
- * the last item in the queue will be removed.
+ * Removes the specified queue item from the queue.
  *
  * @param {string} id The id of the queue item to remove.
- * @param {number} delayMs The optional delay between removing the item and triggering the next one.
  *
- * @return {void}
+ * @return {boolean} Whether there are remaining items in the queue.
  */
 export function QueuePop(
-    id: string = null,
-    delayMs: number = 0): boolean
+    id: string): boolean
 {
+    // Ensure id is valid.
+
     if (id === null || id === undefined) {
-        _queue.shift();
+        throw new Error; // TODO: handle this error
+    }
+
+    // Find the index of the specified queue item.
+
+    let index = _queue.length;
+
+    while (index--) {
+        if (_queue[index].id === id) {
+            break;
+        }
+    }
+
+    // Remove the queue item.
+
+    if (index !== -1) {
+        _queue.splice(index, 1);
     } else {
-        let index = _queue.length;
+        throw new Error; // TODO: handle error id not found
+    }
 
-        while (index--) {
-            if (_queue[index].id === id) {
-                break;
+    if (_queue[0] === undefined) {
+        return false;
+    }
+
+    // Queue is not empty so trigger all subsequent queue items that do not
+    // conflict with this triggered item or with each other.
+
+    const end = _queue.length;
+    const precedents = [_queue[0]];
+
+    for (let i = 1; i < end; i++) {
+        for (const precedent of precedents) {
+            if (precedent.type & _queue[i].type) {
+                return true; // Conflict found so don't check anymore.
             }
-        }
 
-        if (index >= 0) {
-            _queue.splice(index, 1);
-        } else {
-            // TODO: handle error id not found
+            precedents.push(_queue[i]);
+
+            if (_queue[i].state === QueueState.Idle) {
+                _trigger(i);
+            }
         }
     }
 
-    if (_queue.length) {
-        if (_isIdle(_queue[0])) {
-            if (delayMs) {
-                setTimeout(() => _trigger(0), delayMs);
-            } else {
-                _trigger(0);
-            }
-        } else if (!delayMs && _queue[1]?.state === QueueState.Idle && !_isConflict(_queue[0], _queue[1])) {
-            _trigger(1);
-        }
-    }
-
-    return !_queue.length;
+    return true;
 }
 
 /**
