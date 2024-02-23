@@ -293,7 +293,7 @@ export function VideoIsRecentlyPlayed(
 export async function VideoInit(): Promise<void>
 {
     _base = document.createElement('div');
-    _base.id = VideoConfig.elementId;
+    _base.id = VideoConfig.baseElementId;
     _base.style.position = 'absolute';
     _base.style.width = '100vw';
     _base.style.height = '100vh';
