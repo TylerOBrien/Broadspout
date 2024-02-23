@@ -2,7 +2,7 @@
  * System Imports
 */
 
-import { CooldownIsActive, CooldownGetSecondsRemaining, CooldownType, CooldownGetResponse } from '@system/Cooldown';
+import { CooldownIsActive, CooldownType, CooldownGetResponse } from '@system/Cooldown';
 import { TmiSend } from '@system/Tmi';
 import { QueueMode, QueuePop, QueuePush, QueueType } from '@system/Queue';
 import { User } from '@system/User';
