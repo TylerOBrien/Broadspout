@@ -96,6 +96,10 @@ function _playFile(
     _containers[container].element.appendChild(
         _createVideoElement(_videos[name], events)
     );
+
+    if (events?.onVisible) {
+        events.onVisible();
+    }
 }
 
 /**
