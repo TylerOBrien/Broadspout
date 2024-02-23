@@ -25,11 +25,20 @@ export interface Video
     extent?: Extent;
 }
 
+export enum VideoPlaybackState
+{
+    Loading = 1,
+    Playing = 2,
+    Played  = 3,
+    Error   = 4,
+}
+
 export interface VideoPlayback
 {
     video: Video;
     element: HTMLVideoElement;
     when: Date;
+    state: VideoPlaybackState;
 }
 
 export interface VideoContainer

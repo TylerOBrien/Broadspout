@@ -13,7 +13,7 @@ import { ChronoDateDiffSeconds, ChronoDurationSeconds, Duration } from '@system/
  * Relative Imports
 */
 
-import { Video, VideoContainer, VideoEventHandler, VideoExtension, VideoPlayback } from './types';
+import { Video, VideoContainer, VideoEventHandler, VideoExtension, VideoPlayback, VideoPlaybackState } from './types';
 import { AABB } from '@system/Geometry';
 
 /**
@@ -116,7 +116,7 @@ function _playFile(
         const source = video.firstChild as HTMLSourceElement;
         const now = new Date;
 
-        _playing.push({ video: _videos[name], element: video, when: now });
+        _playing.push({ video: _videos[name], element: video, when: now, state: VideoPlaybackState.Loading });
         _videos[name].history.push(new Date);
         _containers[container].element.appendChild(video);
 
