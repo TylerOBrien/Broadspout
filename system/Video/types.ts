@@ -12,6 +12,7 @@ export type VideoExtension = 'mp4' | 'mkv' | 'm4v' | 'webm';
 
 export interface VideoEventHandler
 {
+    onVisible: () => void;
     onPlaybackStart: () => void;
     onPlaybackEnd: () => void;
 }
