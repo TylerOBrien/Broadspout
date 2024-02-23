@@ -31,20 +31,6 @@ function _isConflict(
 }
 
 /**
- * Returns true if the given queue item is currently idle (meaning that the
- * function for the item is not being executed). False otherwise.
- *
- * @param {QueueItem} item The queue item.
- *
- * @return {boolean}
- */
-function _isIdle(
-    item: QueueItem): boolean
-{
-    return item.state === QueueState.Idle;
-}
-
-/**
  * Executes the function for the queue item at the specified index position.
  *
  * @param {number} index The index position of the queue item to execute.
