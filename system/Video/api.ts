@@ -123,7 +123,7 @@ function _playFile(
         };
 
         _playing.push(playback);
-        _videos[name].history.push(new Date);
+        _videos[name].history.push(now);
         _containers[container].element.appendChild(video);
 
         if (events?.onCreate) {
