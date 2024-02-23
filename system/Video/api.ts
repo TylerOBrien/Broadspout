@@ -101,8 +101,8 @@ function _playFile(
         _videos[name].history.push(new Date);
         _containers[container].element.appendChild(video);
 
-        if (events?.onVisible) {
-            events.onVisible(video);
+        if (events?.onCreate) {
+            events.onCreate(video);
         }
 
         source.setAttribute('src', _videos[name].uri);
