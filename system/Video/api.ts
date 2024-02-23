@@ -122,6 +122,7 @@ function _playFile(
         const now = new Date;
         const playback = {
             container,
+            queueid,
             video: _videos[name],
             element: video,
             when: now,
