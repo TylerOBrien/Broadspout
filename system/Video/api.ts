@@ -68,6 +68,8 @@ function _createVideoElement(
             events.onPlaybackEnd(video);
         }
 
+        _containers[container].element.removeChild(video);
+
         if (queueid) {
             QueuePop(queueid);
         }
