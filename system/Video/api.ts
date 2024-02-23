@@ -37,10 +37,7 @@ let _validExtensions: Array<VideoExtension> = ['mp4', 'm4v', 'mkv', 'webm'];
  */
 function _createVideoElement(
     container: string,
-    from: Video,
-    resolve: () => void,
-    events?: VideoEventHandler,
-    queueid?: string): HTMLVideoElement
+    from: Video): HTMLVideoElement
 {
     const video = document.createElement('video');
     const source = document.createElement('source');
@@ -56,43 +53,51 @@ function _createVideoElement(
         break;
     }
 
-    video.addEventListener('loadeddata', (): void => {
-        if (events?.onPlaybackStart) {
-            events.onPlaybackStart(video);
-        }
-
-        video.play();
-    });
-
-    video.addEventListener('ended', (): void => {
-        if (events?.onPlaybackEnd) {
-            events.onPlaybackEnd(video);
-        }
-
-        _containers[container].element.removeChild(video);
-
-        let index = _playing.length;
-
-        while (index--) {
-            if (_playing[index].element === video) {
-                _playing.splice(index, 1);
-                break;
-            }
-        }
-
-        if (queueid) {
-            QueuePop(queueid);
-        }
-
-        resolve();
-    });
-
     video.setAttribute('width', (from.extent?.w || _containers[container].bounds.w).toString());
     video.setAttribute('height', (from.extent?.h || _containers[container].bounds.h).toString());
 
     video.appendChild(source);
 
     return video;
+}
+
+/**
+ * @return {void}
+ */
+function _addEventHandlers(
+    playback: VideoPlayback,
+    resolve: () => void): void
+{
+    playback.element.addEventListener('loadeddata', (): void => {
+        if (playback.events?.onPlaybackStart) {
+            playback.events.onPlaybackStart(playback.element);
+        }
+
+        playback.element.play();
+    });
+
+    playback.element.addEventListener('ended', (): void => {
+        if (playback.events?.onPlaybackEnd) {
+            playback.events.onPlaybackEnd(playback.element);
+        }
+
+        _containers[playback.container].element.removeChild(playback.element);
+
+        let index = _playing.length;
+
+        while (index--) {
+            if (_playing[index].element === playback.element) {
+                _playing.splice(index, 1);
+                break;
+            }
+        }
+
+        if (playback.queueid) {
+            QueuePop(playback.queueid);
+        }
+
+        resolve();
+    });
 }
 
 /**
@@ -112,10 +117,11 @@ function _playFile(
     queueid?: string): Promise<void>
 {
     return new Promise((resolve) => {
-        const video = _createVideoElement(container, _videos[name], resolve, events, queueid);
+        const video = _createVideoElement(container, _videos[name]);
         const source = video.firstChild as HTMLSourceElement;
         const now = new Date;
         const playback = {
+            container,
             video: _videos[name],
             element: video,
             when: now,
@@ -125,6 +131,8 @@ function _playFile(
         _playing.push(playback);
         _videos[name].history.push(now);
         _containers[container].element.appendChild(video);
+
+        _addEventHandlers(playback, resolve);
 
         if (events?.onCreate) {
             events.onCreate(video);

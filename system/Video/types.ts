@@ -35,10 +35,13 @@ export enum VideoPlaybackState
 
 export interface VideoPlayback
 {
+    container: string;
     video: Video;
     element: HTMLVideoElement;
     when: Date;
     state: VideoPlaybackState;
+    events?: VideoEventHandler;
+    queueid?: string;
 }
 
 export interface VideoContainer
