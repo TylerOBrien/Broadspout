@@ -37,6 +37,7 @@ let _validExtensions: Array<VideoExtension> = ['mp4', 'm4v', 'mkv', 'webm'];
 function _createVideoElement(
     container: string,
     from: Video,
+    resolve: () => void,
     events?: VideoEventHandler): HTMLVideoElement
 {
     const video = document.createElement('video');
@@ -65,6 +66,8 @@ function _createVideoElement(
         if (events?.onPlaybackEnd) {
             events.onPlaybackEnd(video);
         }
+
+        resolve();
     });
 
     video.setAttribute('width', (from.extent?.w || _containers[container].bounds.w).toString());
@@ -83,25 +86,27 @@ function _createVideoElement(
  * @param {() => void} onPlaybackEnd
  * @param {string} queueid The unique id for this video in the queue.
  *
- * @return {void}
+ * @return {Promise<void>}
  */
 function _playFile(
     container: string,
     name: string,
     events?: VideoEventHandler,
-    queueid?: string): void
+    queueid?: string): Promise<void>
 {
-    const video = _createVideoElement(container, _videos[name], events);
-    const source = video.firstChild as HTMLSourceElement;
+    return new Promise((resolve) => {
+        const video = _createVideoElement(container, _videos[name], resolve, events);
+        const source = video.firstChild as HTMLSourceElement;
 
-    _videos[name].history.push(new Date);
-    _containers[container].element.appendChild(video);
+        _videos[name].history.push(new Date);
+        _containers[container].element.appendChild(video);
 
-    if (events?.onVisible) {
-        events.onVisible(video);
-    }
+        if (events?.onVisible) {
+            events.onVisible(video);
+        }
 
-    source.setAttribute('src', _videos[name].uri);
+        source.setAttribute('src', _videos[name].uri);
+    });
 }
 
 /**
