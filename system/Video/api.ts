@@ -38,7 +38,8 @@ function _createVideoElement(
     container: string,
     from: Video,
     resolve: () => void,
-    events?: VideoEventHandler): HTMLVideoElement
+    events?: VideoEventHandler,
+    queueid?: string): HTMLVideoElement
 {
     const video = document.createElement('video');
     const source = document.createElement('source');
@@ -65,6 +66,10 @@ function _createVideoElement(
     video.addEventListener('ended', (): void => {
         if (events?.onPlaybackEnd) {
             events.onPlaybackEnd(video);
+        }
+
+        if (queueid) {
+            QueuePop(queueid);
         }
 
         resolve();
@@ -95,7 +100,7 @@ function _playFile(
     queueid?: string): Promise<void>
 {
     return new Promise((resolve) => {
-        const video = _createVideoElement(container, _videos[name], resolve, events);
+        const video = _createVideoElement(container, _videos[name], resolve, events, queueid);
         const source = video.firstChild as HTMLSourceElement;
 
         _videos[name].history.push(new Date);
