@@ -16,21 +16,6 @@ let _queue: Array<QueueItem> = [];
 */
 
 /**
- * Determines if the two queue items have conflicting types.
- *
- * @param {QueueItem} first The first queue item.
- * @param {QueueItem} second The second queue item.
- *
- * @return {boolean}
- */
-function _isConflict(
-    first: QueueItem,
-    second: QueueItem): boolean
-{
-    return !!(first && second) && !!(first.type & second.type);
-}
-
-/**
  * Executes the function for the queue item at the specified index position.
  *
  * @param {number} index The index position of the queue item to execute.
@@ -109,7 +94,7 @@ export function QueuePush(
         _trigger(0);
         break;
     case 2: // Length of 2 means this may have been added while a single non-conflicting item is currently active.
-        if (!_isConflict(_queue[0], _queue[1])) {
+        if (_queue[0].type ^ _queue[1].type) {
             _trigger(1);
         }
         break;
