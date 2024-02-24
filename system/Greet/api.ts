@@ -13,6 +13,7 @@ import { User } from '@system/User';
 
 import { GreetFetchGreetings } from './drivers';
 import { Greeting, GreetHandler, GreetState } from './types';
+import { ProfileGet } from '@system/Profile';
 
 /**
  * Locals
@@ -61,16 +62,18 @@ function _handleGreetFinish(): void
 }
 
 /**
- * @return {void}
+ * @return {Promise<void>}
  */
-function _greetNextUser(): void
+async function _greetNextUser(): Promise<void>
 {
     if (!_handler || !_queue[0]) {
         return;
     }
 
     _state = GreetState.Busy;
-    _handler(_queue[0]).then(_handleGreetFinish);
+
+    await _handler(_queue[0], await ProfileGet(_queue[0].login));
+    _handleGreetFinish();
 }
 
 /**

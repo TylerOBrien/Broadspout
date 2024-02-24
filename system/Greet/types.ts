@@ -1,3 +1,4 @@
+import { Profile } from '@system/Profile';
 import { User } from '@system/User';
 
 export enum GreetState
@@ -13,4 +14,4 @@ export interface Greeting
     video?: string;
 }
 
-export type GreetHandler = (user: User) => Promise<void>;
+export type GreetHandler = (user: User, profile: Profile) => Promise<void>;
