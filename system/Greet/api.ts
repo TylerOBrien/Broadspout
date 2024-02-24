@@ -37,7 +37,7 @@ let _handler: GreetHandler;
  *
  * @return {void}
  */
- export function _handleChatMessage(
+function _handleChatMessage(
     message: ChatMessage): void
 {
     if (_enabled && !GreetIsGreeted(message.user) && !GreetIsQueued(message.user)) {
