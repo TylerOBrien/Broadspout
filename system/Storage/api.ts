@@ -1,4 +1,17 @@
 /**
+ * Config
+*/
+
+import { StorageConfig } from '@config/Storage';
+
+/**
+ * Config
+*/
+
+import { StorageMode } from './types';
+import { StorageGetLocal, StorageGetRemote } from './drivers';
+
+/**
  * Public Functions
 */
 
@@ -117,15 +130,15 @@ export function StorageRecordAdd<Ty>(
  */
 export async function StorageGet<Ty>(
     key: string,
-    defaultValue: Ty = null): Promise<Ty>
+    defaultValue: Ty = null,
+    mode?: StorageMode): Promise<Ty>
 {
-    const item = localStorage.getItem(key);
-
-    if (!item) {
-        return defaultValue;
+    switch (mode || StorageConfig.defaultMode) {
+    case StorageMode.Local:
+        return StorageGetLocal(key, defaultValue);
+    case StorageMode.Remote:
+        return await StorageGetRemote('http://localhost', key, defaultValue);
     }
-
-    return JSON.parse(item);
 }
 
 /**
