@@ -2,20 +2,17 @@
  * Root Imports
 */
 
-import { GreetConfig } from '@config/Greet';
 import { ChatAddEventHandler, ChatMessage } from '@system/Chat';
-import { ProfileGet } from '@system/Profile';
-import { QueueMode, QueuePop, QueuePush, QueueType } from '@system/Queue';
-import { SoundExists, SoundPlayFile } from '@system/Sound';
+import { GreetConfig } from '@config/Greet';
 import { StorageGet, StorageSet } from '@system/Storage';
 import { User } from '@system/User';
-import { GreetFetchGreetings } from './drivers';
 
 /**
  * Sibling Imports
 */
 
-import { Greeting, GreetState } from './types';
+import { GreetFetchGreetings } from './drivers';
+import { Greeting, GreetHandler, GreetState } from './types';
 
 /**
  * Locals
@@ -26,6 +23,7 @@ let _queue: Array<User> = [];
 let _enabled: boolean = false;
 let _greeted: Array<string> = [];
 let _greetings: Record<string, Greeting> = {};
+let _handler: GreetHandler;
 
 /**
  * Private Functions
@@ -39,7 +37,7 @@ let _greetings: Record<string, Greeting> = {};
  *
  * @return {void}
  */
- export function _handleMessage(
+ export function _handleChatMessage(
     message: ChatMessage): void
 {
     if (_enabled && !GreetIsGreeted(message.user) && !GreetIsQueued(message.user)) {
@@ -52,53 +50,27 @@ let _greetings: Record<string, Greeting> = {};
  */
 function _handleGreetFinish(): void
 {
+    _state = GreetState.Idle;
     _greeted.push(_queue.shift().login);
 
     if (GreetConfig.storage.enabled) {
         StorageSet(GreetConfig.storage.history.name, _greeted);
     }
 
-    if (_queue.length) {
-        _greet();
-    }
+    _greetNextUser();
 }
 
 /**
  * @return {void}
  */
-function _greet(): void
+function _greetNextUser(): void
 {
+    if (!_handler || !_queue[0]) {
+        return;
+    }
 
-
-    return;
-
-    /* let remaining = 2;
-
-    const _handleSoundPlayStart = async () => {
-        await GreetUser(_queue[0]);
-        if (--remaining === 0) {
-            _handleGreetFinish();
-        }
-    };
-
-    const _handleSoundPlayFinish = async () => {
-        if (--remaining === 0) {
-            _handleGreetFinish();
-        }
-    };
-
-    if (SoundExists(_greetings[_queue[0].login])) {
-        SoundPlayFile(
-            null,
-            _greetings[_queue[0].login],
-            QueueMode.UpNext,
-            _handleSoundPlayStart,
-            _handleSoundPlayFinish,
-        );
-    } else {
-        remaining = 1;
-        _handleSoundPlayStart();
-    } */
+    _state = GreetState.Busy;
+    _handler(_queue[0]).then(_handleGreetFinish);
 }
 
 /**
@@ -112,80 +84,13 @@ function _enqueue(
     user: User): void
 {
     if (_queue.push(user) === 1) {
-        _greet();
+        _greetNextUser();
     }
 }
 
 /**
  * Public Functions
 */
-
-/**
- * @param {User} user The user to show the greeting for.
- *
- * @return {void}
- */
-export function GreetUser(
-    user: User): Promise<void>
-{
-    if (_state === GreetState.Busy) {
-        _queue.push(user);
-        return new Promise(resolve => resolve());
-    }
-
-    _state = GreetState.Busy;
-
-    const container = document.createElement('div');
-    const inner = document.createElement('div');
-    const img = document.createElement('img');
-    const message = document.createElement('div');
-
-    container.style.left = `${ GreetConfig.ui.x }px`;
-    container.style.top = `${ GreetConfig.ui.y }px`;
-    container.style.width = `${ GreetConfig.ui.width }px`;
-    container.style.height = `${ GreetConfig.ui.height }px`;
-
-    img.style.width = `${ GreetConfig.ui.height }px`;
-    img.style.height = `${ GreetConfig.ui.height }px`;
-    img.style.transform = `translateX(-${ GreetConfig.ui.height }px)`;
-
-    ProfileGet(user.name).then(profile => {
-        if (profile.avatar_url) {
-            img.src = profile.avatar_url;
-            img.onload = () => {
-                img.style.transform = `translateX(${ GreetConfig.ui.width }px)`;
-
-                setTimeout(() => { img.style.transform = `translateX(-${ GreetConfig.ui.height }px)`; }, 7500);
-                setTimeout(() => { inner.style.opacity = '0'; }, 7500 * 2);
-            };
-        }
-    });
-
-    return new Promise(resolve => {
-        message.innerHTML = `<span style="color:${ user.color || 'white' }">${ user.name }</span> has arrived`;
-
-        inner.appendChild(img);
-        inner.appendChild(message);
-        container.appendChild(inner);
-        document.body.appendChild(container);
-
-        requestAnimationFrame(() => {
-            inner.style.opacity = '1.0';
-
-            setTimeout(() => { inner.style.opacity = '0'; }, 14000);
-            setTimeout(() => {
-                document.body.removeChild(container);
-                resolve();
-
-                _state = GreetState.Idle;
-
-                if (_queue.length) {
-                    GreetUser(_queue.shift());
-                }
-            }, 17500);
-        });
-    });
-}
 
 /**
  * Returns true if the given user has a greeting configured.
@@ -261,6 +166,15 @@ export async function GreetReload(): Promise<void>
 }
 
 /**
+ * @return {void}
+ */
+export function GreetSetHandler(
+    handler: GreetHandler): void
+{
+    _handler = handler;
+}
+
+/**
  * Prepares the Greet API for usage. Should only be called once.
  *
  * @return {Promise<void>}
@@ -271,10 +185,10 @@ export async function GreetInit(): Promise<void>
     _enabled = true;
 
     if (GreetConfig.storage.enabled) {
-        _greeted = StorageGet(GreetConfig.storage.history.name, []);
+        _greeted = await StorageGet<Array<string>>(GreetConfig.storage.history.name, []);
     }
 
     await GreetReload();
 
-    ChatAddEventHandler(_handleMessage);
+    ChatAddEventHandler(_handleChatMessage);
 }
