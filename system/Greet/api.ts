@@ -54,10 +54,10 @@ function _handleGreetFinish(): void
     _greeted.push(_queue.shift().login);
 
     if (GreetConfig.storage.enabled) {
-        StorageSet(GreetConfig.storage.history.name, _greeted);
+        StorageSet(GreetConfig.storage.history.name, _greeted).then(_greetNextUser);
+    } else {
+        _greetNextUser();
     }
-
-    _greetNextUser();
 }
 
 /**
