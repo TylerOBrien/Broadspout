@@ -1,5 +1,5 @@
 /**
- * Root Imports
+ * System Imports
 */
 
 import { ChatAddEventHandler, ChatMessage } from '@system/Chat';
@@ -10,7 +10,7 @@ import { StorageGet, StorageSet } from '@system/Storage';
 import { User } from '@system/User';
 
 /**
- * Sibling Imports
+ * Relative Imports
 */
 
 import { GreetFetchGreetings } from './drivers';
