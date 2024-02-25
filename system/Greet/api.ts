@@ -4,6 +4,8 @@
 
 import { ChatAddEventHandler, ChatMessage } from '@system/Chat';
 import { GreetConfig } from '@config/Greet';
+import { ProfileGet, ProfileProvider } from '@system/Profile';
+import { QueueMode, QueuePop, QueuePush, QueueType } from '@system/Queue';
 import { StorageGet, StorageSet } from '@system/Storage';
 import { User } from '@system/User';
 
@@ -13,8 +15,6 @@ import { User } from '@system/User';
 
 import { GreetFetchGreetings } from './drivers';
 import { Greeting, GreetHandler, GreetState } from './types';
-import { ProfileGet, ProfileProvider } from '@system/Profile';
-import { QueueMode, QueuePop, QueuePush, QueueType } from '@system/Queue';
 
 /**
  * Locals
