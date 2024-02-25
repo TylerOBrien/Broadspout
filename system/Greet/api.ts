@@ -66,13 +66,16 @@ async function _handleGreetFinish(): Promise<void>
  */
 async function _greetNextUser(): Promise<void>
 {
-    if (!_handler || !_queue[0]) {
+    if (!_queue[0]) {
         return;
     }
 
     _state = GreetState.Busy;
 
-    await _handler(_queue[0], await ProfileGet(_queue[0].login));
+    if (!_handler) {
+        await _handler(_queue[0], await ProfileGet(_queue[0].login));
+    }
+
     await _handleGreetFinish();
 }
 
