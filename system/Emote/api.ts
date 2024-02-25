@@ -43,7 +43,7 @@ async function _loadNonTwitchEmotes(): Promise<void>
  * @param {string} word
  * @param {EmoteProvider} provider
  *
- * @return {string}
+ * @return {string} The ID of the emote.
  */
 export function EmoteId(
     word: string,
@@ -61,7 +61,7 @@ export function EmoteId(
  * @param {EmoteSize} size Resolution size of the emote.
  * @param {EmoteProvider} provider Which provider to use.
  *
- * @return {string}
+ * @return {string} The URL for the emote image.
  */
 export function EmoteUrl(
     id: string,
@@ -77,6 +77,8 @@ export function EmoteUrl(
 }
 
 /**
+ * Prepares the Emote API for usage. Should only be called once.
+ *
  * @return {Promise<void>}
  */
 export async function EmoteInit(): Promise<void>
