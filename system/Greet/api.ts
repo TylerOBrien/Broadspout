@@ -47,18 +47,18 @@ function _handleChatMessage(
 }
 
 /**
- * @return {void}
+ * @return {Promise<void>}
  */
-function _handleGreetFinish(): void
+async function _handleGreetFinish(): Promise<void>
 {
     _state = GreetState.Idle;
     _greeted.push(_queue.shift().login);
 
     if (GreetConfig.storage.enabled) {
-        StorageSet(GreetConfig.storage.history.name, _greeted).then(_greetNextUser);
-    } else {
-        _greetNextUser();
+        await StorageSet(GreetConfig.storage.history.name, _greeted);
     }
+
+    _greetNextUser();
 }
 
 /**
@@ -73,7 +73,7 @@ async function _greetNextUser(): Promise<void>
     _state = GreetState.Busy;
 
     await _handler(_queue[0], await ProfileGet(_queue[0].login));
-    _handleGreetFinish();
+    await _handleGreetFinish();
 }
 
 /**
