@@ -13,7 +13,8 @@ import { User } from '@system/User';
 
 import { GreetFetchGreetings } from './drivers';
 import { Greeting, GreetHandler, GreetState } from './types';
-import { ProfileGet } from '@system/Profile';
+import { ProfileGet, ProfileProvider } from '@system/Profile';
+import { QueueMode, QueuePop, QueuePush, QueueType } from '@system/Queue';
 
 /**
  * Locals
@@ -62,9 +63,9 @@ async function _handleGreetFinish(): Promise<void>
 }
 
 /**
- * @return {Promise<void>}
+ * @return {void}
  */
-async function _greetNextUser(): Promise<void>
+function _greetNextUser(): void
 {
     if (!_queue[0]) {
         return;
@@ -72,11 +73,20 @@ async function _greetNextUser(): Promise<void>
 
     _state = GreetState.Busy;
 
-    if (!_handler) {
-        await _handler(_queue[0], await ProfileGet(_queue[0].login));
-    }
+    QueuePush({
+        type: QueueType.Sound,
+        mode: QueueMode.UpNext,
+        handler: async (queueid: string): Promise<void> => {
+            const profile = await ProfileGet(_queue[0].login, ProfileProvider.Twitch);
 
-    await _handleGreetFinish();
+            if (_handler) {
+                await _handler(_queue[0], profile);
+            }
+
+            QueuePop(queueid);
+            await _handleGreetFinish();
+        },
+    });
 }
 
 /**
@@ -131,7 +141,7 @@ export function GreetIsGreeted(
  *
  * @return {boolean} Whether the user has a queued greeting.
  */
- export function GreetIsQueued(
+export function GreetIsQueued(
     user: User): boolean
 {
     for (const enqueued of _queue) {
