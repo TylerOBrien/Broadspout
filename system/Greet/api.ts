@@ -67,7 +67,9 @@ async function _handleGreetFinish(): Promise<void>
  */
 function _greetNextUser(): void
 {
-    if (!_queue[0]) {
+    const user = _queue[0];
+
+    if (!user) {
         return;
     }
 
@@ -77,10 +79,10 @@ function _greetNextUser(): void
         type: QueueType.Sound,
         mode: QueueMode.UpNext,
         handler: async (queueid: string): Promise<void> => {
-            const profile = await ProfileGet(_queue[0].login, ProfileProvider.Twitch);
+            const profile = await ProfileGet(user.login, ProfileProvider.Twitch);
 
             if (_handler) {
-                await _handler(_queue[0], profile);
+                await _handler(user, profile);
             }
 
             QueuePop(queueid);
