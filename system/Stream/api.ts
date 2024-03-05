@@ -23,7 +23,7 @@ export function StreamSetGame(
     game_id: string): Promise<void>
 {
     return new Promise(async (resolve, reject) => {
-        const response = await fetch(`${ TwitchConfig.api }/channels?broadcaster_id=${ TwitchConfig.id }`, {
+        const response = await fetch(StreamGetChannelAPI(), {
             ...StreamGetHTTPOptions(),
             method: 'PATCH',
             body: JSON.stringify({ game_id }),
@@ -46,7 +46,7 @@ export function StreamSetTitle(
     title: string): Promise<void>
 {
     return new Promise(async (resolve, reject) => {
-        const response = await fetch(`${ TwitchConfig.api }/channels?broadcaster_id=${ TwitchConfig.id }`, {
+        const response = await fetch(StreamGetChannelAPI(), {
             ...StreamGetHTTPOptions(),
             method: 'PATCH',
             body: JSON.stringify({ title }),
@@ -58,6 +58,14 @@ export function StreamSetTitle(
             reject();
         }
     });
+}
+
+/**
+ * @return {string}
+ */
+export function StreamGetChannelAPI(): string
+{
+    return `${ TwitchConfig.api }/channels?broadcaster_id=${ TwitchConfig.id }`;
 }
 
 /**
