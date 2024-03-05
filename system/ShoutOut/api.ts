@@ -38,9 +38,13 @@ let _handler: ShoutoutHandler;
 function _isValidForShoutOut(
     name: string): boolean
 {
-    if (name.length < 4 || name.length > 25) { // Username length requirements enforced by Twitch.
+    // Check username length requirements enforced by Twitch.
+
+    if (name.length < 4 || name.length > 25) {
         return false;
     }
+
+    // Ensure only valid characters are used.
 
     let index = name.length;
 
@@ -49,6 +53,8 @@ function _isValidForShoutOut(
             return false;
         }
     }
+
+    // No issues found so username is considered valid.
 
     return true;
 }
