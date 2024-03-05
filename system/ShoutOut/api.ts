@@ -69,9 +69,13 @@ function _isValidForShoutOut(
 function _handleShoutOut(
     command: ChatCommand): void
 {
+    // Do nothing if a handler callback has not been set.
+
     if (!_handler) {
         return;
     }
+
+    // Ensure username is properly formatted.
 
     let username = (command.contents || '').trim();
 
@@ -79,9 +83,13 @@ function _handleShoutOut(
         username = username.slice(1);
     }
 
+    // Do nothing if given an invalid username.
+
     if (!_isValidForShoutOut(username)) {
         return;
     }
+
+    // Username is valid so handle the shoutout.
 
     switch (username.toLowerCase()) {
     case TwitchConfig.channel:
