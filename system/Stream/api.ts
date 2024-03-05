@@ -15,7 +15,7 @@ import { StreamHttpOptions } from './types';
 */
 
 /**
- * @param {string} game
+ * @param {string} game_id The ID value of the game.
  *
  * @return {Promise<void>}
  */
@@ -38,7 +38,7 @@ export function StreamSetGame(
 }
 
 /**
- * @param {string} title
+ * @param {string} title The title of the stream.
  *
  * @return {Promise<void>}
  */
