@@ -11,12 +11,6 @@ import { TwitchConfig } from '@config/Twitch';
 import { StreamHttpOptions } from './types';
 
 /**
- * Locals
-*/
-
-let _options: StreamHttpOptions;
-
-/**
  * Public Functions
 */
 
@@ -30,7 +24,7 @@ export function StreamSetGame(
 {
     return new Promise(async (resolve, reject) => {
         const response = await fetch(`${ TwitchConfig.api }/channels?broadcaster_id=${ TwitchConfig.id }`, {
-            ..._options,
+            ...StreamGetHTTPOptions(),
             method: 'PATCH',
             body: JSON.stringify({ game_id }),
         });
@@ -53,7 +47,7 @@ export function StreamSetTitle(
 {
     return new Promise(async (resolve, reject) => {
         const response = await fetch(`${ TwitchConfig.api }/channels?broadcaster_id=${ TwitchConfig.id }`, {
-            ..._options,
+            ...StreamGetHTTPOptions(),
             method: 'PATCH',
             body: JSON.stringify({ title }),
         });
@@ -71,15 +65,7 @@ export function StreamSetTitle(
  */
 export function StreamGetHTTPOptions(): StreamHttpOptions
 {
-    return _options;
-}
-
-/**
- * @return {Promise<void>}
- */
-export async function StreamInit(): Promise<void>
-{
-    _options = {
+    return {
         headers: {
             'Authorization': TwitchConfig.bearer,
             'Client-Id': TwitchConfig.client,
