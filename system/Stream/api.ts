@@ -15,6 +15,22 @@ import { StreamHttpOptions } from './types';
 */
 
 /**
+ * @return {Promise<void>}
+ */
+export function StreamTestOAuth(): Promise<void>
+{
+    return new Promise(async (resolve, reject): Promise<void> => {
+        const response = await fetch(StreamGetUserAPI(), StreamGetHTTPOptions());
+
+        if (response.status === 200) {
+            resolve();
+        } else {
+            reject();
+        }
+    });
+}
+
+/**
  * @param {string} game_id The ID value of the game.
  *
  * @return {Promise<void>}
@@ -66,6 +82,14 @@ export function StreamSetTitle(
 export function StreamGetChannelAPI(): string
 {
     return `${ TwitchConfig.api }/channels?broadcaster_id=${ TwitchConfig.id }`;
+}
+
+/**
+ * @return {string}
+ */
+export function StreamGetUserAPI(): string
+{
+    return `${ TwitchConfig.api }/users?login=${ TwitchConfig.username }`;
 }
 
 /**
