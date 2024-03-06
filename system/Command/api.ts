@@ -41,6 +41,9 @@ const _history: Record<string, Record<string, Array<Date>>> = {};
 */
 
 /**
+ * @param {string} name The name of the command.
+ * @param {ChatCommand} command The chat command object.
+ *
  * @return {void}
  */
 function _appendHistory(
@@ -181,7 +184,9 @@ export function CommandDispatch(
 }
 
 /**
- * @return {number}
+ * @param {string} name The name of the command.
+ *
+ * @return {number} The number of times the command has been executed.
  */
 export function CommandGetExecuteCount(
     name: string): number
