@@ -34,10 +34,27 @@ import {
 
 const _events: { [P in CommandEventType]?: Array<(command: ChatCommand) => void> } = {};
 const _commands: Record<string, ChatCommandEvent> = {};
+const _history: Record<string, Record<string, Array<Date>>> = {};
 
 /**
  * Private Functions
 */
+
+/**
+ * @return {void}
+ */
+function _appendHistory(
+    name: string,
+    command: ChatCommand): void
+{
+    if (!(name in _history)) {
+        _history[name] = {[command.user.id]: [new Date]};
+    } else if (!(command.user.id in _history[name])) {
+        _history[name][command.user.id] = [new Date];
+    } else {
+        _history[name][command.user.id].push(new Date);
+    }
+}
 
 /**
  * @param {CommandEventType} type The type of event to dispatch.
@@ -158,10 +175,28 @@ export function CommandDispatch(
     const lower = command.name.toLowerCase();
 
     if (lower in _commands) {
-        if (_commands[lower].channel === command.channel) {
-            _commands[lower].handler(command);
-        }
+        _appendHistory(lower, command);
+        _dispatchEvent(CommandEventType.Execute, command);
     } else {
         _dispatchEvent(CommandEventType.NotFound, command);
     }
+}
+
+/**
+ * @return {number}
+ */
+export function CommandGetExecuteCount(
+    name: string): number
+{
+    if (!(name in _history)) {
+        return 0;
+    }
+
+    let sum = 0;
+
+    for (const key in _history[name]) {
+        sum += (_history[name][key] || []).length;
+    }
+
+    return sum;
 }
