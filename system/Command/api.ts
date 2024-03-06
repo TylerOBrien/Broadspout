@@ -188,6 +188,8 @@ export function CommandDispatch(
 export function CommandGetExecuteCount(
     name: string): number
 {
+    name = (name || '').toLowerCase();
+
     if (!(name in _history)) {
         return 0;
     }
