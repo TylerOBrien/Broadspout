@@ -25,7 +25,6 @@ export interface ChatCommand
     name: string;
     user: User;
     contents: string;
-    channel: string;
     isBot: boolean;
     when: Date;
 }
@@ -43,7 +42,6 @@ export type CommandExecuteHandler = (command: ChatCommand) => void | Promise<voi
 
 export interface ChatCommandEvent
 {
-    channel: string;
     handler: CommandExecuteHandler;
     include?: CommandEventHandlerFilter;
     exclude?: CommandEventHandlerFilter;

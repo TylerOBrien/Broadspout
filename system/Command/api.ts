@@ -102,7 +102,6 @@ export function ChatCommandCreate(
         user,
         contents,
         isBot,
-        channel: channel.slice(1),
         when: new Date(parseInt(state['tmi-sent-ts'])),
     };
 }
@@ -137,7 +136,6 @@ export function CommandRegister(
         handler,
         include,
         exclude,
-        channel: TwitchConfig.channel,
     };
 }
 
