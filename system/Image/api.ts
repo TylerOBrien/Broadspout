@@ -1,4 +1,16 @@
 /**
+ * Config
+*/
+
+import { ImageConfig } from '@config/Image';
+
+/**
+ * System
+*/
+
+import { ChronoDateDelta, ChronoDurationConvert, Duration, DurationTuple, DurationType } from '@system/Chrono';
+
+/**
  * Relative Imports
 */
 
@@ -40,6 +52,26 @@ function _waitAndCloneFromCache(
 }
 
 /**
+ * @param {string} cacheKey The key to be used for cache storage.
+ * @param {Duration | DurationTuple} cacheTTL
+ *
+ * @return {boolean}
+ */
+function _isExpired(
+    cacheKey: string,
+    threshold: Duration | DurationTuple): boolean
+{
+    if (!_cache[cacheKey]?.loadedAt) {
+        return false;
+    }
+
+    const ms = ChronoDurationConvert(threshold, DurationType.Milliseconds);
+    const delta = ChronoDateDelta(new Date, _cache[cacheKey].loadedAt, DurationType.Milliseconds);
+
+    return delta > ms.value;
+}
+
+/**
  * Public Functions
 */
 
@@ -49,18 +81,24 @@ function _waitAndCloneFromCache(
  * @param {string} url The URL of the image.
  * @param {string} crossOrigin The cross origin policy.
  * @param {string} cacheKey The key to be used for cache storage.
+ * @param {Duration | DurationTuple} cacheTTL
  *
  * @return {Promise<HTMLImageElement>} The loaded HTML image element.
  */
 export function ImageLoad(
     url: string,
     crossOrigin?: string,
-    cacheKey?: string): Promise<HTMLImageElement>
+    cacheKey?: string,
+    cacheTTL?: Duration | DurationTuple): Promise<HTMLImageElement>
 {
     cacheKey = cacheKey || url;
 
     if (cacheKey in _cache) {
-        return _waitAndCloneFromCache(cacheKey);
+        if (_isExpired(cacheKey, cacheTTL || ImageConfig.default.TTL)) {
+            delete _cache[cacheKey];
+        } else {
+            return _waitAndCloneFromCache(cacheKey);
+        }
     }
 
     return new Promise((resolve): void => {
