@@ -1,8 +1,14 @@
 /**
+ * Relative Imports
+*/
+
+import { Image } from './types';
+
+/**
  * Locals
 */
 
-const _cache: Record<string, HTMLImageElement> = {};
+const _cache: Record<string, Image> = {};
 
 /**
  * Private Functions
@@ -22,8 +28,8 @@ function _waitAndCloneFromCache(
 {
     return new Promise((resolve): void => {
         const _check = (): void => {
-            if (_cache[key].complete) {
-                resolve(_cache[key].cloneNode() as HTMLImageElement);
+            if (_cache[key].element.complete) {
+                resolve(_cache[key].element.cloneNode() as HTMLImageElement);
             } else {
                 setTimeout(_check, 32);
             }
@@ -58,13 +64,22 @@ export function ImageLoad(
     }
 
     return new Promise((resolve): void => {
-        _cache[cacheKey] = new Image;
+        function onLoaded(): void
+        {
+            _cache[cacheKey].loadedAt = new Date;
 
-        if (crossOrigin) {
-            _cache[cacheKey].crossOrigin = crossOrigin;
+            resolve(_cache[cacheKey].element);
         }
 
-        _cache[cacheKey].src = url;
-        _cache[cacheKey].onload = (): void => resolve(_cache[cacheKey]);
+        _cache[cacheKey] = {
+            element: new Image,
+        };
+
+        if (crossOrigin) {
+            _cache[cacheKey].element.crossOrigin = crossOrigin;
+        }
+
+        _cache[cacheKey].element.src = url;
+        _cache[cacheKey].element.onload = onLoaded;
     });
 }
