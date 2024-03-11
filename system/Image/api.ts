@@ -42,29 +42,29 @@ function _waitAndCloneFromCache(
  *
  * @param {string} url The URL of the image.
  * @param {string} crossOrigin The cross origin policy.
- * @param {string} key The key to be used for cache storage.
+ * @param {string} cacheKey The key to be used for cache storage.
  *
  * @return {Promise<HTMLImageElement>} The loaded HTML image element.
  */
 export function ImageLoad(
     url: string,
     crossOrigin?: string,
-    key?: string): Promise<HTMLImageElement>
+    cacheKey?: string): Promise<HTMLImageElement>
 {
-    key = key || url;
+    cacheKey = cacheKey || url;
 
-    if (key in _cache) {
-        return _waitAndCloneFromCache(key);
+    if (cacheKey in _cache) {
+        return _waitAndCloneFromCache(cacheKey);
     }
 
     return new Promise((resolve): void => {
-        _cache[key] = new Image;
+        _cache[cacheKey] = new Image;
 
         if (crossOrigin) {
-            _cache[key].crossOrigin = crossOrigin;
+            _cache[cacheKey].crossOrigin = crossOrigin;
         }
 
-        _cache[key].src = url;
-        _cache[key].onload = (): void => resolve(_cache[key]);
+        _cache[cacheKey].src = url;
+        _cache[cacheKey].onload = (): void => resolve(_cache[cacheKey]);
     });
 }
