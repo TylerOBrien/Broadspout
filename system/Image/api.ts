@@ -21,7 +21,7 @@ function _waitAndCloneFromCache(
             if (_cache[key].complete) {
                 resolve(_cache[key].cloneNode() as HTMLImageElement);
             } else {
-                requestAnimationFrame(_check);
+                setTimeout(_check, 32);
             }
         };
 
