@@ -53,7 +53,7 @@ export function ImageLoad(
         return _waitAndCloneFromCache(key);
     }
 
-    return new Promise((resolve) => {
+    return new Promise((resolve): void => {
         cache[key] = new Image;
 
         if (crossOrigin) {
