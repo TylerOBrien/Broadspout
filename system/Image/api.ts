@@ -34,6 +34,8 @@ function _waitAndCloneFromCache(
 */
 
 /**
+ * Creates a new HTML image element and loads the image specified by the URL.
+ *
  * @param {string} url The URL of the image.
  * @param {string} crossOrigin The cross origin policy.
  * @param {string} key The key to be used for cache storage.
