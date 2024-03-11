@@ -16,7 +16,7 @@ const _cache: Record<string, HTMLImageElement> = {};
 function _waitAndCloneFromCache(
     key: string): Promise<HTMLImageElement>
 {
-    return new Promise((resolve) => {
+    return new Promise((resolve): void => {
         const _check = (): void => {
             if (_cache[key].complete) {
                 resolve(_cache[key].cloneNode() as HTMLImageElement);
