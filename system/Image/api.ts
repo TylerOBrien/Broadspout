@@ -9,9 +9,13 @@ const _cache: Record<string, HTMLImageElement> = {};
 */
 
 /**
+ * Returns a clone of the specified HTML image element. If the image has not
+ * finished loading when this is called then it will wait until loading is
+ * completed before returning the image element.
+ *
  * @param {string} key The key to be used for cache storage.
  *
- * @return {Promise<HTMLImageElement>}
+ * @return {Promise<HTMLImageElement>} The loaded HTML image element.
  */
 function _waitAndCloneFromCache(
     key: string): Promise<HTMLImageElement>
@@ -40,7 +44,7 @@ function _waitAndCloneFromCache(
  * @param {string} crossOrigin The cross origin policy.
  * @param {string} key The key to be used for cache storage.
  *
- * @return {Promise<HTMLImageElement>}
+ * @return {Promise<HTMLImageElement>} The loaded HTML image element.
  */
 export function ImageLoad(
     url: string,
