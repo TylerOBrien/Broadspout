@@ -2,7 +2,7 @@
  * Locals
 */
 
-const cache: Record<string, HTMLImageElement> = {};
+const _cache: Record<string, HTMLImageElement> = {};
 
 /**
  * Private Functions
@@ -18,8 +18,8 @@ function _waitAndCloneFromCache(
 {
     return new Promise((resolve) => {
         const _check = (): void => {
-            if (cache[key].complete) {
-                resolve(cache[key].cloneNode() as HTMLImageElement);
+            if (_cache[key].complete) {
+                resolve(_cache[key].cloneNode() as HTMLImageElement);
             } else {
                 requestAnimationFrame(_check);
             }
@@ -49,18 +49,18 @@ export function ImageLoad(
 {
     key = key || url;
 
-    if (key in cache) {
+    if (key in _cache) {
         return _waitAndCloneFromCache(key);
     }
 
     return new Promise((resolve): void => {
-        cache[key] = new Image;
+        _cache[key] = new Image;
 
         if (crossOrigin) {
-            cache[key].crossOrigin = crossOrigin;
+            _cache[key].crossOrigin = crossOrigin;
         }
 
-        cache[key].src = url;
-        cache[key].onload = (): void => resolve(cache[key]);
+        _cache[key].src = url;
+        _cache[key].onload = (): void => resolve(_cache[key]);
     });
 }
