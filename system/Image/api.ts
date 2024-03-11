@@ -68,7 +68,7 @@ function _isExpired(
     const ms = ChronoDurationConvert(threshold, DurationType.Milliseconds);
     const delta = ChronoDateDelta(new Date, _cache[cacheKey].loadedAt, DurationType.Milliseconds);
 
-    return delta > ms.value;
+    return delta.value > ms.value;
 }
 
 /**
