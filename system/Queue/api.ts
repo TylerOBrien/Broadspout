@@ -58,7 +58,7 @@ export function QueuePush(
 
     // Check if the request should be rejected on a conflict being found
 
-    if (options.mode === QueueMode.Reject && steps !== (_queue.length + 1)) {
+    if (options.mode === QueueMode.Reject && steps !== _queue.length) {
         return null;
     }
 
