@@ -347,7 +347,7 @@ export function VideoControlCreate(
  */
 export function VideoEventHandlerCreate(
     onCreate?: (playback: VideoPlayback) => void,
-    onReject?: () => void,
+    onReject?: (result: VideoPlaybackResult) => void,
     onPlaybackStart?: (playback: VideoPlayback) => void,
     onPlaybackEnd?: (playback: VideoPlayback) => void): VideoEventHandler
 {
