@@ -33,7 +33,6 @@ export interface Sound
 {
     uri: string;
     volume: number;
-    history: Array<Date>;
 }
 
 export interface SoundPlayback
@@ -45,8 +44,24 @@ export interface SoundPlayback
     user?: User;
 }
 
+export enum SoundPlaybackError
+{
+    NoError = 'NoError',
+    NotFound = 'NotFound',
+    Cooldown = 'Cooldown',
+    QueueReject = 'QueueReject',
+}
+
+export interface SoundPlaybackResult
+{
+    error: SoundPlaybackError;
+}
+
 export interface SoundListeners
 {
-    onPlaybackStart?: (playback: SoundPlayback) => void | Promise<void>;
-    onPlaybackEnd?: (playback: SoundPlayback) => void | Promise<void>;
+    onCreate?: (playback: SoundPlayback) => void;
+    onSuccess?: (result: SoundPlaybackResult) => void;
+    onReject?: (result: SoundPlaybackResult) => void;
+    onPlaybackStart?: (playback: SoundPlayback) => void;
+    onPlaybackEnd?: (playback: SoundPlayback) => void;
 }
