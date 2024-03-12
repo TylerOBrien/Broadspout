@@ -4,8 +4,8 @@
 
 export enum ProfileProvider
 {
-    Twitch,
-    SRC,
+    Twitch = 'Twitch',
+    SRC = 'SRC',
 }
 
 export interface ProfileHttpOptions
@@ -26,6 +26,7 @@ export interface ProfileColorGradient
 export interface Profile
 {
     id: string;
+    provider: ProfileProvider;
     name: string;
     login: string;
     avatar_url: string;
