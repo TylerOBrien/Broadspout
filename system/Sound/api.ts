@@ -99,6 +99,12 @@ function _play(
     });
 }
 
+/**
+ * @param {string} name
+ * @param {User} user
+ *
+ * @return {boolean}
+ */
 function _isCooldownActive(
     name: string,
     user: User): boolean
