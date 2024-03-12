@@ -2,19 +2,21 @@
  * System Imports
 */
 
+import { ChronoDateDelta, ChronoDurationConvert, Duration, DurationTuple, DurationType } from '@system/Chrono';
 import { CooldownIsActive, CooldownType, CooldownGetResponse } from '@system/Cooldown';
-import { TmiSend } from '@system/Tmi';
+import { AABB, AABBUnits, Extent } from '@system/Geometry';
 import { QueueMode, QueuePop, QueuePush, QueueType } from '@system/Queue';
-import { User } from '@system/User';
+import { TmiSend } from '@system/Tmi';
+import { User, UserFilter } from '@system/User';
 import { VideoConfig } from '@config/Video';
-import { ChronoDateDiffSeconds, ChronoDurationSeconds, Duration } from '@system/Chrono';
 
 /**
  * Relative Imports
 */
 
-import { Video, VideoContainer, VideoEventHandler, VideoExtension, VideoPlayback, VideoPlaybackState } from './types';
-import { AABB } from '@system/Geometry';
+import { Video, VideoContainer, VideoControl, VideoEventHandler, VideoExtension, VideoPlayback, VideoPlaybackError, VideoPlaybackResult, VideoPlaybackState } from './types';
+import { HistoryAddItem, HistoryFindItem } from '@system/History/api';
+import { HistoryType } from '@system/History/types';
 
 /**
  * Locals
@@ -31,30 +33,40 @@ let _validExtensions: Array<VideoExtension> = ['mp4', 'm4v', 'mkv', 'webm'];
 */
 
 /**
+ * @param {string} container
  * @param {Video} from
+ * @param {Point} position
  *
  * @return {HTMLVideoElement}
  */
 function _createVideoElement(
     container: string,
-    from: Video): HTMLVideoElement
+    from: Video,
+    control?: VideoControl): HTMLVideoElement
 {
     const video = document.createElement('video');
     const source = document.createElement('source');
 
     switch (from.extension) {
-        case 'mp4':
-        case 'mkv':
-        case 'm4v':
-            source.setAttribute('type', 'video/mp4');
-        break;
-        case 'webm':
-            source.setAttribute('type', 'video/webm');
-        break;
+    case 'mp4':
+    case 'mkv':
+    case 'm4v':
+        source.setAttribute('type', 'video/mp4');
+    break;
+    case 'webm':
+        source.setAttribute('type', 'video/webm');
+    break;
     }
 
-    video.setAttribute('width', (from.extent?.w || _containers[container].bounds.w).toString());
-    video.setAttribute('height', (from.extent?.h || _containers[container].bounds.h).toString());
+    video.volume = control?.volume ?? 1;
+    video.playbackRate = control?.speed ?? 1;
+
+    if (control?.position) {
+        video.style.transform = `translate(${ control.position.x ?? 0 }px, ${ control.position.y ?? 0 }px)`;
+    }
+
+    video.setAttribute('width', (from.extent?.w ?? _containers[container].bounds.w).toString());
+    video.setAttribute('height', (from.extent?.h ?? _containers[container].bounds.h).toString());
 
     video.appendChild(source);
 
@@ -68,17 +80,19 @@ function _addEventHandlers(
     playback: VideoPlayback,
     resolve: () => void): void
 {
-    playback.element.addEventListener('loadeddata', (): void => {
+    function onLoadedData(): void
+    {
         if (playback.events?.onPlaybackStart) {
-            playback.events.onPlaybackStart(playback.element);
+            playback.events.onPlaybackStart(playback);
         }
 
         playback.element.play();
-    });
+    }
 
-    playback.element.addEventListener('ended', (): void => {
+    function onPlaybackEnd(): void
+    {
         if (playback.events?.onPlaybackEnd) {
-            playback.events.onPlaybackEnd(playback.element);
+            playback.events.onPlaybackEnd(playback);
         }
 
         _containers[playback.container].element.removeChild(playback.element);
@@ -97,7 +111,10 @@ function _addEventHandlers(
         }
 
         resolve();
-    });
+    }
+
+    playback.element.addEventListener('loadeddata', onLoadedData);
+    playback.element.addEventListener('ended', onPlaybackEnd);
 }
 
 /**
@@ -113,34 +130,56 @@ function _addEventHandlers(
 function _playFile(
     container: string,
     name: string,
+    user?: User,
     events?: VideoEventHandler,
+    control?: VideoControl,
     queueid?: string): Promise<void>
 {
-    return new Promise((resolve) => {
-        const video = _createVideoElement(container, _videos[name]);
+    return new Promise((resolve): void => {
+        const when = new Date;
+        const video = _createVideoElement(container, _videos[name], control);
         const source = video.firstChild as HTMLSourceElement;
-        const now = new Date;
-        const playback = {
+        const playback: VideoPlayback = {
             container,
             queueid,
+            control,
+            when,
             video: _videos[name],
             element: video,
-            when: now,
             state: VideoPlaybackState.Loading,
         };
 
+        HistoryAddItem(HistoryType.Video, name, user, when);
+
         _playing.push(playback);
-        _videos[name].history.push(now);
         _containers[container].element.appendChild(video);
 
         _addEventHandlers(playback, resolve);
 
         if (events?.onCreate) {
-            events.onCreate(video);
+            events.onCreate(playback);
         }
 
         source.setAttribute('src', _videos[name].uri);
     });
+}
+
+/**
+ * @return {boolean}
+ */
+function _isCooldownActive(
+    name: string,
+    user: User): boolean
+{
+    if (VideoConfig.cooldownEnabled && user && CooldownIsActive(user, CooldownType.Video)) {
+        if (VideoConfig.cooldownResponseEnabled) {
+            TmiSend(CooldownGetResponse(user, CooldownType.Video, 'to play another video.'));
+        }
+
+        return true;
+    }
+
+    return false;
 }
 
 /**
@@ -149,44 +188,56 @@ function _playFile(
 
 /**
  * @param {string} container The name of the container to add the video to.
- * @param {User} user The user who requested the video to be played.
  * @param {string} name The name of the video.
+ * @param {User} user The user who requested the video to be played.
+ * @param {control} VideoControl
  * @param {QueueMode} mode The queue mode to use for playback.
  * @param {VideoEventHandler} events The playback event callbacks.
  *
- * @return {Promise<void>}
+ * @return {Promise<VideoPlaybackResult>}
  */
 export function VideoPlay(
     container: string,
-    user: User,
     name: string,
+    user?: User,
+    control?: VideoControl,
+    events?: VideoEventHandler,
     mode: QueueMode = QueueMode.Enqueue,
-    events?: VideoEventHandler): Promise<void>
+    type: QueueType = QueueType.Sound | QueueType.Video): Promise<VideoPlaybackResult>
 {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject): void => {
         name = (name || '').toLowerCase();
 
         if (!(name in _videos)) {
-            return resolve();
+            return reject({ error: VideoPlaybackError.NotFound });
         }
 
-        if (VideoConfig.cooldownEnabled && user && CooldownIsActive(user, CooldownType.Video)) {
-            if (VideoConfig.cooldownResponseEnabled) {
-                TmiSend(CooldownGetResponse(user, CooldownType.Video, 'to play another video.'));
-            }
-            return resolve();
+        if (_isCooldownActive(name, user)) {
+            return reject({ error: VideoPlaybackError.Cooldown });
         }
 
-        if (mode === QueueMode.Bypass) {
-            _playFile(container, name, events).then(resolve);
-        } else {
+        if (control) {
+            control = { ...control };
+        }
+
+        function onComplete(): void
+        {
+            resolve({ error: VideoPlaybackError.NoError });
+        }
+
+        switch (mode) {
+        case QueueMode.Bypass:
+            _playFile(container, name, user, events, control).then(onComplete);
+            break;
+        default:
             QueuePush({
                 mode,
-                type: QueueType.SoundVideo,
+                type,
                 handler: (queueid: string): void => {
-                    _playFile(container, name, events, queueid).then(resolve);
+                    _playFile(container, name, user, events, control, queueid).then(onComplete);
                 },
             });
+            break;
         }
     });
 }
@@ -194,12 +245,16 @@ export function VideoPlay(
 /**
  * @param {string} name The name to use for identifying the video.
  * @param {string} uri The URI to use for locating the video.
+ * @param {Extent} extent The width and height of the video.
+ * @param {Duration} duration The duration of the video.
  *
  * @return {void}
  */
 export function VideoRegister(
     name: string,
-    uri: string): void
+    uri: string,
+    extent?: Extent,
+    duration?: Duration): void
 {
     name = (name || '').toLowerCase();
 
@@ -216,7 +271,8 @@ export function VideoRegister(
 
     _videos[name] = {
         uri,
-        history: [],
+        extent,
+        duration,
         extension: _validExtensions[validExtensionIndex],
     };
 }
@@ -224,19 +280,21 @@ export function VideoRegister(
 /**
  * @param {string} name The name to use for identifying the video.
  * @param {AABB} bounds The width/height/x/y bounds of the container.
+ * @param {Partial<AABBUnits>} units
  *
  * @return {void}
  */
 export function VideoRegisterContainer(
     name: string,
-    bounds: AABB): void
+    bounds: AABB,
+    units?: Partial<AABBUnits>): void
 {
     const element = document.createElement('div');
 
-    element.style.position = 'absolute';
-    element.style.width = `${ bounds.w }px`;
-    element.style.height = `${ bounds.h }px`;
-    element.style.transform = `translate(${ bounds.x }px, ${ bounds.y }px)`;
+    element.style.overflow = 'hidden';
+    element.style.width = `${ bounds.w }${ units?.w ?? 'px' }`;
+    element.style.height = `${ bounds.h }${ units?.h ?? 'px' }`;
+    element.style.transform = `translate(${ bounds.x ?? 0 }${ units?.x ?? 'px' }, ${ bounds.y ?? 0 }${ units?.y ?? 'px' })`;
 
     _base.appendChild(element);
     _containers[name] = {
@@ -271,7 +329,7 @@ export function VideoResume(
  *
  * @return {boolean} Whether the video exists.
  */
- export function VideoExists(
+export function VideoExists(
     name: string): boolean
 {
     return (name || '').toLowerCase() in _videos;
@@ -282,27 +340,36 @@ export function VideoResume(
  * the specified duration of time. False otherwise.
  *
  * @param {string} name The name of the video.
- * @param {Duration} threshold The length of time required to have passed for a video to no longer be considered recently played.
+ * @param {Duration | DurationTuple} threshold The length of time required to have passed for a video to no longer be considered recently played.
  *
- * @return {boolean} Whether the video is recently played.
+ * @return {boolean}
  */
-export function VideoIsRecentlyPlayed(
+export function VideoPlayedWithin(
     name: string,
-    threshold: Duration): boolean
+    threshold: Duration | DurationTuple,
+    filter?: UserFilter): boolean
 {
     name = (name || '').toLowerCase();
 
-    if (!(name in _videos) || _videos[name].history.length === 0) {
+    if (!(name in _videos)) {
         return false;
     }
 
-    const secondsPassed = ChronoDateDiffSeconds(new Date, _videos[name].history.at(-1));
-    const secondsRequired = ChronoDurationSeconds(threshold);
+    const history = HistoryFindItem(HistoryType.Video, name, filter);
 
-    return secondsPassed < secondsRequired;
+    if (!history) {
+        return false;
+    }
+
+    const millisecondsSincePlay = ChronoDateDelta(new Date, history.when, DurationType.Milliseconds);
+    const millisecondsLimit = ChronoDurationConvert(threshold, DurationType.Milliseconds);
+
+    return millisecondsSincePlay.value < millisecondsLimit.value;
 }
 
 /**
+ * Prepares the Video API for usage. Should only be called once.
+ *
  * @return {Promise<void>}
  */
 export async function VideoInit(): Promise<void>
