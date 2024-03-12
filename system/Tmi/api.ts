@@ -15,10 +15,17 @@ import { TwitchConfig } from '@config/Twitch';
  * System
 */
 
-import { ChatDispatch, ChatMessageCreate } from '@system/Chat';
-import { ChatCommandCreate, CommandDispatch } from '@system/Command';
+import { ChatEvent, ChatMessageCreate } from '@system/Chat';
+import { ChatCommandCreate } from '@system/Command';
+import { EventDispatch } from '@system/EventDispatcher';
 import { Endpoint } from '@system/Network';
 import { UserCreate } from '@system/User';
+
+/**
+ * Relative Imports
+*/
+
+import { TmiEvent } from './events';
 
 /**
  * Locals
@@ -40,21 +47,16 @@ let _client: Client;
  *
  * @return {void}
  */
-function _handleTmiChat(
+function _handleTmiChatMessage(
     channel: string,
     state: ChatUserstate,
     contents: string,
     self: boolean): void
 {
-    ChatDispatch(
-        ChatMessageCreate(
-            UserCreate(state),
-            state,
-            contents,
-            self,
-            channel,
-        )
-    );
+    const user = UserCreate(state);
+    const message = ChatMessageCreate(user, state, contents, self, channel);
+
+    EventDispatch(ChatEvent.Event, ChatEvent.Listener.Message, user, message);
 }
 
 /**
@@ -67,24 +69,19 @@ function _handleTmiChat(
  *
  * @return {void}
  */
-function _handleTmiCommand(
+function _handleTmiChatCommand(
     channel: string,
     state: ChatUserstate,
     contents: string,
     self: boolean): void
 {
     const pivot = contents.indexOf(' '); // First space (if given) denotes the beginning of args.
+    const name = contents.slice(1); // Remove the ! that all commands start with.
+    const args = pivot === -1 ? null : contents.slice(pivot+1); // Existence of space means args were given.
+    const user = UserCreate(state);
+    const command = ChatCommandCreate(name, user, state, args, self, channel);
 
-    CommandDispatch(
-        ChatCommandCreate(
-            contents.slice(1), // Remove the ! that all commands start with.
-            UserCreate(state),
-            state,
-            pivot === -1 ? null : contents.slice(pivot + 1), // Check if args were given.
-            self,
-            channel,
-        )
-    );
+    EventDispatch(TmiEvent.Event, TmiEvent.Listener.Command, user, command);
 }
 
 /**
@@ -104,9 +101,9 @@ function _handleTmiMessage(
     self: boolean): void
 {
     if (contents[0] === '!' && contents.length > 1) {
-        _handleTmiCommand(channel, state, contents, self);
+        _handleTmiChatCommand(channel, state, contents, self);
     } else {
-        _handleTmiChat(channel, state, contents, self);
+        _handleTmiChatMessage(channel, state, contents, self);
     }
 }
 
@@ -148,7 +145,7 @@ export function TmiInit(
             options:    { debug: AppConfig.debug },
             connection: { secure: true },
             identity:   { username, password },
-            channels:   Array.isArray(channel) ? channel : [ channel ],
+            channels:   Array.isArray(channel) ? channel : [channel],
         };
 
         try {
