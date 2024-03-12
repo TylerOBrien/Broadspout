@@ -207,8 +207,12 @@ export function VideoPlay(
     return new Promise((resolve): void => {
         name = (name || '').toLowerCase();
 
+        const result: VideoPlaybackResult = {
+            error: VideoPlaybackError.NoError,
+        };
+
         if (!(name in _videos)) {
-            const result = { error: VideoPlaybackError.NotFound };
+            result.error = VideoPlaybackError.NotFound;
 
             if (options?.onReject) {
                 options?.onReject(result);
@@ -218,7 +222,7 @@ export function VideoPlay(
         }
 
         if (_isCooldownActive(name, user)) {
-            const result = { error: VideoPlaybackError.Cooldown };
+            result.error = VideoPlaybackError.Cooldown;
 
             if (options?.onReject) {
                 options?.onReject(result);
@@ -229,7 +233,7 @@ export function VideoPlay(
 
         function onComplete(): void
         {
-            resolve({ error: VideoPlaybackError.NoError });
+            resolve(result);
         }
 
         switch (mode) {
