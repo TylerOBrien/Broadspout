@@ -1,3 +1,5 @@
+import { User } from "@system/User";
+
 export enum SoundState
 {
     Idle,
@@ -10,15 +12,41 @@ export enum SoundPlayType
     TTS,
 }
 
+export enum SoundPlaybackOption
+{
+    AllowMultiple,
+    DisallowMultiple,
+}
+
 export interface SoundTTSOptions
 {
     voice: string;
 }
 
+export interface SoundControl
+{
+    speed: number;
+    volume: number;
+}
+
 export interface Sound
 {
     uri: string;
-    cooldown: number;
     volume: number;
     history: Array<Date>;
+}
+
+export interface SoundPlayback
+{
+    id: number;
+    name: string;
+    element: HTMLAudioElement;
+    control: SoundControl;
+    user?: User;
+}
+
+export interface SoundListeners
+{
+    onPlaybackStart?: (playback: SoundPlayback) => void | Promise<void>;
+    onPlaybackEnd?: (playback: SoundPlayback) => void | Promise<void>;
 }

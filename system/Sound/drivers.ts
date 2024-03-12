@@ -35,7 +35,7 @@ const _schema = joi.object({
  */
 export function SoundFetchSounds(): Promise<Record<string, Sound>>
 {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve, reject): Promise<void> => {
         const response = await fetch(SoundConfig.sounds.uri);
 
         if (response.status !== 200) {

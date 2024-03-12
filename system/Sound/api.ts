@@ -8,66 +8,93 @@ import { SoundConfig } from '@config/Sound';
  * System Imports
 */
 
+import { ChronoDateDelta, ChronoMilliseconds, ChronoSeconds, Duration, DurationTuple, DurationType } from '@system/Chrono';
 import { CooldownIsActive, CooldownType, CooldownGetResponse } from '@system/Cooldown';
-import { TmiSend } from '@system/Tmi';
 import { QueueMode, QueuePop, QueuePush, QueueType } from '@system/Queue';
-import { User } from '@system/User';
-import { ChronoDateDiffSeconds, ChronoDurationSeconds, Duration } from '@system/Chrono';
+import { TmiSend } from '@system/Tmi';
+import { User, UserFilter, UserFilterIsMatch } from '@system/User';
 
 /**
  * Relative Imports
 */
 
-import { Sound, SoundTTSOptions } from './types';
 import { SoundFetchSounds } from './drivers';
+import { Sound, SoundTTSOptions, SoundControl, SoundListeners, SoundPlayback, SoundPlaybackOption } from './types';
 
 /**
  * Locals
 */
 
+let _nextUid = 0;
 let _sounds: Record<string, Sound> = {};
-let _playing: Array<HTMLAudioElement> = [];
+let _playing: Array<SoundPlayback> = [];
 
 /**
  * Private Functions
 */
 
 /**
- * @param {string} queueid
- * @param {string} uri
- * @param {number} volume
- * @param {number} delay
- * @param {number} attempts
- *
  * @return {void}
  */
 function _play(
+    id: number,
     uri: string,
-    volume: number,
-    onPlaybackStart: () => void,
-    onPlaybackEnd: () => void,
-    queueid?: string,
-    delay?: number): void
+    name?: string,
+    user?: User,
+    control?: SoundControl,
+    listeners?: SoundListeners,
+    queueid?: string): Promise<void>
 {
-    const audio = document.createElement('audio');
+    return new Promise((resolve): void => {
+        function onLoadedData(): void
+        {
+            if (listeners?.onPlaybackStart) {
+                listeners.onPlaybackStart(playback);
+            }
 
-    _playing.push(audio);
-
-    audio.addEventListener('loadeddata', audio.play);
-    audio.addEventListener('play', onPlaybackStart);
-
-    audio.addEventListener('ended', (): void => {
-        _playing.splice(_playing.indexOf(audio), 1);
-
-        if (queueid) {
-            QueuePop(queueid, typeof delay === 'number' ? delay : SoundConfig.defaultDelayAfterPlayback);
+            element.play();
         }
 
-        setTimeout(onPlaybackEnd, typeof delay === 'number' ? delay : SoundConfig.defaultDelayAfterPlayback);
-    });
+        function onDurationElapsed(): void
+        {
+            _playing.splice(_playing.indexOf(playback), 1);
 
-    audio.volume = volume;
-    audio.src = uri;
+            if (queueid) {
+                QueuePop(queueid);
+            }
+
+            if (listeners?.onPlaybackEnd) {
+                listeners.onPlaybackEnd(playback);
+            }
+
+            resolve();
+        }
+
+        function onTimeUpdate(): void
+        {
+            if (element.currentTime === element.duration) {
+                onDurationElapsed();
+            }
+        }
+
+        const element = document.createElement('audio');
+        const playback: SoundPlayback = {
+            id,
+            name,
+            control,
+            user,
+            element,
+        };
+
+        _playing.push(playback);
+
+        element.addEventListener('loadeddata', onLoadedData);
+        element.addEventListener('timeupdate', onTimeUpdate);
+
+        element.playbackRate = control?.speed ?? 1;
+        element.volume = control?.volume ?? 1;
+        element.src = uri;
+    });
 }
 
 /**
@@ -75,9 +102,21 @@ function _play(
 */
 
 /**
+ * @return {SoundControl}
+ */
+export function SoundCreateControl(
+    speed: number,
+    volume: number): SoundControl
+{
+    return {
+        speed: typeof speed === 'number' ? speed : 1,
+        volume: typeof volume === 'number' ? volume : 1,
+    };
+}
+
+/**
  * @param {string} name
  * @param {string} uri
- * @param {number} cooldown
  * @param {number} volume
  *
  * @return {void}
@@ -85,7 +124,6 @@ function _play(
 export function SoundRegister(
     name: string,
     uri: string,
-    cooldown: number = 30,
     volume: number = 1.0): void
 {
     name = (name || '').toLowerCase();
@@ -96,25 +134,27 @@ export function SoundRegister(
 
     _sounds[name] = {
         uri,
-        cooldown,
         volume,
         history: [],
     };
 }
 
 /**
- * @param {User} user The user who triggered the sound.
  * @param {string} name The name of the sound.
+ * @param {User} user The user who triggered the sound.
+ * @param {SoundPlaybackOption} option
  * @param {QueueMode} mode The queue mode to use.
  *
  * @return {Promise<void>}
  */
-export function SoundPlayFile(
-    user: User,
+export function SoundPlay(
     name: string,
+    user?: User,
+    control?: SoundControl,
+    option: SoundPlaybackOption = SoundPlaybackOption.AllowMultiple,
     mode: QueueMode = QueueMode.Enqueue): Promise<void>
 {
-    return new Promise((resolve) => {
+    return new Promise((resolve): void => {
         if (SoundConfig.cooldownEnabled && user && CooldownIsActive(user, CooldownType.SoundFile)) {
             if (SoundConfig.cooldownResponseEnabled) {
                 TmiSend(CooldownGetResponse(user, CooldownType.SoundFile, 'to use another sound.'));
@@ -122,14 +162,22 @@ export function SoundPlayFile(
             return resolve();
         }
 
+        const id = _nextUid++;
+
+        control = {
+            speed: 1,
+            volume: _sounds[name].volume,
+            ...(control || {}),
+        };
+
         if (mode === QueueMode.Bypass) {
-            _play(_sounds[name].uri, _sounds[name].volume, null, resolve);
+            _play(id, _sounds[name].uri, user, control).then(resolve);
         } else {
             QueuePush({
                 mode,
                 type: QueueType.Sound,
                 handler: (queueid) => {
-                    _play(_sounds[name].uri, _sounds[name].volume, null, resolve, queueid);
+                    _play(id, _sounds[name].uri, user, control, null, queueid).then(resolve);
                 },
             });
         }
@@ -170,20 +218,47 @@ export function SoundPlayTTS(
 /**
  * @return {void}
  */
-export function SoundSuspendAll(): void
+export function SoundPause(
+    id: number): void
 {
-    for (const audio of _playing) {
-        audio.pause();
+    for (const sound of _playing) {
+        if (sound.id === id) {
+            sound.element.pause();
+            break;
+        }
     }
 }
 
 /**
  * @return {void}
  */
-export function SoundResumeAll(): void
+export function SoundCancelAll(
+    filter?: UserFilter): void
 {
-    for (const audio of _playing) {
-        audio.play();
+    for (const sound of _playing) {
+        sound.element.currentTime = sound.element.duration;
+    }
+}
+
+/**
+ * @return {void}
+ */
+export function SoundPauseAll(
+    filter?: UserFilter): void
+{
+    for (const sound of _playing) {
+        sound.element.pause();
+    }
+}
+
+/**
+ * @return {void}
+ */
+export function SoundResumeAll(
+    filter?: UserFilter): void
+{
+    for (const sound of _playing) {
+        sound.element.play();
     }
 }
 
@@ -201,6 +276,33 @@ export function SoundExists(
 }
 
 /**
+ * Returns true if the given name is a valid name for an existing sound.
+ *
+ * @param {string} name The name of the sound.
+ * @param {UserFilter} filter
+ *
+ * @return {boolean}
+ */
+export function SoundIsPlaying(
+    name: string,
+    filter?: UserFilter): boolean
+{
+    name = (name || '').toLowerCase();
+
+    if (!(name in _sounds)) {
+        return false;
+    }
+
+    for (const playback of _playing) {
+        if (playback.name === name) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
  * Returns true if the specified sound both exists and has been played within
  * the specified duration of time. False otherwise.
  *
@@ -209,20 +311,44 @@ export function SoundExists(
  *
  * @return {boolean} Whether the sound is recently played.
  */
-export function SoundIsRecentlyPlayed(
+export function SoundPlayedWithinLast(
     name: string,
-    threshold: Duration): boolean
+    threshold: Duration | DurationTuple,
+    filter?: UserFilter): boolean
 {
     name = (name || '').toLowerCase();
 
-    if (!(name in _sounds) || _sounds[name].history.length === 0) {
+    if (!(name in _sounds)) {
         return false;
     }
 
-    const secondsPassed = ChronoDateDiffSeconds(new Date, _sounds[name].history.at(-1));
-    const secondsRequired = ChronoDurationSeconds(threshold);
+    let index = _sounds[name].history.length;
 
-    return secondsPassed < secondsRequired;
+    if (index === 0) {
+        return false;
+    }
+
+    if (filter) {
+        let foundUserFilter = false;
+
+        while (index--) {
+            if (UserFilterIsMatch(filter, _sounds[name].history[index].user)) {
+                foundUserFilter = true;
+                break;
+            }
+        }
+
+        if (!foundUserFilter) {
+            return false;
+        }
+    } else {
+        index--;
+    }
+
+    const millisecondsSinceLastPlay = ChronoDateDelta(new Date, _sounds[name].history[index].when, DurationType.Milliseconds);
+    const millisecondsLimit = ChronoMilliseconds(threshold);
+
+    return millisecondsSinceLastPlay < millisecondsLimit;
 }
 
 /**
@@ -231,6 +357,14 @@ export function SoundIsRecentlyPlayed(
 export async function SoundReload(): Promise<void>
 {
     _sounds = { ..._sounds, ...await SoundFetchSounds() };
+}
+
+/**
+ * @return {Array<string>}
+ */
+export function SoundGetAllNames(): Array<string>
+{
+    return Object.keys(_sounds);
 }
 
 /**
