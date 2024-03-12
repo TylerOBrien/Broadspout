@@ -37,6 +37,7 @@ export enum VideoPlaybackState
 
 export interface VideoPlayback
 {
+    name: string;
     container: string;
     video: Video;
     element: HTMLVideoElement;

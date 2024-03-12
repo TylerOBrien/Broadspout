@@ -139,6 +139,7 @@ function _playFile(
         const video = _createVideoElement(container, _videos[name], options);
         const source = video.firstChild as HTMLSourceElement;
         const playback: VideoPlayback = {
+            name,
             container,
             queueid,
             when,
@@ -378,6 +379,33 @@ export function VideoExists(
     name: string): boolean
 {
     return (name || '').toLowerCase() in _videos;
+}
+
+/**
+ * Returns true if the given name is a valid name for an existing sound.
+ *
+ * @param {string} name The name of the sound.
+ * @param {UserFilter} filter
+ *
+ * @return {boolean}
+ */
+export function VideoIsPlaying(
+    name: string,
+    filter?: UserFilter): boolean
+{
+    name = (name || '').toLowerCase();
+
+    if (!(name in _videos)) {
+        return false;
+    }
+
+    for (const playback of _playing) {
+        if (playback.name === name) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /**
