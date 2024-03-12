@@ -106,10 +106,6 @@ function _addEventHandlers(
             }
         }
 
-        if (playback.queueid) {
-            QueuePop(playback.queueid);
-        }
-
         resolve();
     }
 
@@ -141,7 +137,6 @@ function _playFile(
         const playback: VideoPlayback = {
             name,
             container,
-            queueid,
             when,
             control: VideoControlCreate(options?.speed, options?.volume),
             events: VideoEventHandlerCreate(options?.onCreate, options?.onReject, options?.onPlaybackStart, options?.onPlaybackEnd),
@@ -232,8 +227,14 @@ export function VideoPlay(
             return resolve(result);
         }
 
-        function onComplete(): void
+        async function onStart(queueid?: string): Promise<void>
         {
+            await _playFile(container, name, user, options);
+
+            if (queueid) {
+                QueuePop(queueid);
+            }
+
             if (options?.onSuccess) {
                 options?.onSuccess(result);
             }
@@ -243,15 +244,13 @@ export function VideoPlay(
 
         switch (mode) {
         case QueueMode.Bypass:
-            _playFile(container, name, user, options).then(onComplete);
+            onStart();
             break;
         default:
             QueuePush({
                 mode,
                 type,
-                handler: (queueid: string): void => {
-                    _playFile(container, name, user, options, queueid).then(onComplete);
-                },
+                handler: onStart,
             });
             break;
         }
