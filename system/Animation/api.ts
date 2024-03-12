@@ -68,7 +68,7 @@ export function AnimationRemove(
  *
  * @return {void}
  */
- export function AnimationRegisterContainer(
+export function AnimationRegisterContainer(
     name: string,
     x: number,
     y: number,
