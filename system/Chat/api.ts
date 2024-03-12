@@ -5,28 +5,18 @@
 import { ChatUserstate } from 'tmi.js';
 
 /**
- * Local Imports
+ * System
 */
 
+import { EventAddListener, EventCallback, EventFilter } from '@system/EventDispatcher';
 import { User } from '@system/User';
 
 /**
  * Relative Imports
 */
 
-import {
-    ChatMessage,
-    ChatEventHandler,
-    ChatEventHandlerCallback,
-    ChatEventHandlerFilter,
-} from './types';
-
-/**
- * Locals
-*/
-
-let _uid: number = 0;
-const _events: Array<ChatEventHandler> = [];
+import { ChatMessage } from './types';
+import { ChatEvent } from './events';
 
 /**
  * Public Functions
@@ -70,19 +60,11 @@ export function ChatMessageCreate(
  *
  * @return {number} The uid for the newly added event handler.
  */
-export function ChatAddEventHandler(
-    callback: ChatEventHandlerCallback,
-    include?: ChatEventHandlerFilter,
-    exclude?: ChatEventHandlerFilter): number
+export function ChatAddEventListener(
+    callback: EventCallback,
+    filter?: EventFilter): number
 {
-    _events.push({
-        uid: _uid,
-        callback,
-        include,
-        exclude,
-    });
-
-    return _uid++;
+    return EventAddListener(ChatEvent.Event, ChatEvent.Listener.Message, callback, filter);
 }
 
 /**
@@ -95,55 +77,5 @@ export function ChatAddEventHandler(
 export function ChatRemoveEventListener(
     uid: number): void
 {
-    let index = _events.length;
-
-    while (index--) {
-        if (_events[index].uid === uid) {
-            _events.splice(index, 1);
-            break;
-        }
-    }
-}
-
-/**
- * Passes the given message instance to all appropriate events.
- *
- * @param {ChatMessage} message The message to dispatch.
- *
- * @return {void}
- */
-export function ChatDispatch(
-    message: ChatMessage): void
-{
-    for (const event of _events) {
-        if (event.include) {
-            if (typeof event.include === 'string') {
-                if (event.include !== message.user.login) {
-                    continue;
-                }
-            } else if (Array.isArray(event.include)) {
-                if (event.include.indexOf(message.user.login) === -1) {
-                    continue;
-                }
-            } else if (!event.include(message)) {
-                continue;
-            }
-        }
-
-        if (event.exclude) {
-            if (typeof event.exclude === 'string') {
-                if (event.exclude === message.user.login) {
-                    continue;
-                }
-            } else if (Array.isArray(event.exclude)) {
-                if (event.exclude.indexOf(message.user.login) !== -1) {
-                    continue;
-                }
-            } else if (event.exclude(message)) {
-                continue;
-            }
-        }
-
-        event.callback(message);
-    }
+    //
 }
