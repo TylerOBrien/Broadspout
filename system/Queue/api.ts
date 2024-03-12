@@ -8,7 +8,7 @@ import { QueueItem, QueueMode, QueueOptions, QueueState } from './types';
  * Locals
 */
 
-let _uid: number = 0;
+let _nextId = 0;
 let _queue: Array<QueueItem> = [];
 
 /**
@@ -64,7 +64,7 @@ export function QueuePush(
 
     // Create new queue object
 
-    const id = (++_uid).toString(16);
+    const id = (++_nextId).toString(16);
     const item: QueueItem = {
         id,
         type: options.type,
@@ -171,5 +171,5 @@ export function QueuePop(
  */
 export function QueueGetNextId(): string
 {
-    return (_uid + 1).toString(16);
+    return (_nextId + 1).toString(16);
 }
