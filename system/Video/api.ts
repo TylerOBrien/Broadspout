@@ -208,11 +208,23 @@ export function VideoPlay(
         name = (name || '').toLowerCase();
 
         if (!(name in _videos)) {
-            return resolve({ error: VideoPlaybackError.NotFound });
+            const result = { error: VideoPlaybackError.NotFound };
+
+            if (options?.onReject) {
+                options?.onReject(result);
+            }
+
+            return resolve(result);
         }
 
         if (_isCooldownActive(name, user)) {
-            return resolve({ error: VideoPlaybackError.Cooldown });
+            const result = { error: VideoPlaybackError.Cooldown };
+
+            if (options?.onReject) {
+                options?.onReject(result);
+            }
+
+            return resolve(result);
         }
 
         function onComplete(): void
