@@ -70,8 +70,8 @@ export interface VideoContainer
 
 export interface VideoEventHandler
 {
-    onCreate: (playback: VideoPlayback) => void;
-    onReject: () => void;
-    onPlaybackStart: (playback: VideoPlayback) => void;
-    onPlaybackEnd: (playback: VideoPlayback) => void;
+    onCreate?: (playback: VideoPlayback) => void;
+    onReject?: () => void;
+    onPlaybackStart?: (playback: VideoPlayback) => void;
+    onPlaybackEnd?: (playback: VideoPlayback) => void;
 }

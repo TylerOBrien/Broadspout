@@ -131,19 +131,19 @@ function _playFile(
     container: string,
     name: string,
     user?: User,
-    events?: VideoEventHandler,
-    control?: VideoControl,
+    options?: VideoControl & VideoEventHandler,
     queueid?: string): Promise<void>
 {
     return new Promise((resolve): void => {
         const when = new Date;
-        const video = _createVideoElement(container, _videos[name], control);
+        const video = _createVideoElement(container, _videos[name], options);
         const source = video.firstChild as HTMLSourceElement;
         const playback: VideoPlayback = {
             container,
             queueid,
-            control,
             when,
+            control: VideoControlCreate(options?.speed, options?.volume),
+            events: VideoEventHandlerCreate(options?.onCreate, options?.onReject, options?.onPlaybackStart, options?.onPlaybackEnd),
             video: _videos[name],
             element: video,
             state: VideoPlaybackState.Loading,
@@ -156,8 +156,8 @@ function _playFile(
 
         _addEventHandlers(playback, resolve);
 
-        if (events?.onCreate) {
-            events.onCreate(playback);
+        if (options?.onCreate) {
+            options.onCreate(playback);
         }
 
         source.setAttribute('src', _videos[name].uri);
@@ -200,8 +200,7 @@ export function VideoPlay(
     container: string,
     name: string,
     user?: User,
-    control?: VideoControl,
-    events?: VideoEventHandler,
+    options?: VideoControl & VideoEventHandler,
     mode: QueueMode = QueueMode.Enqueue,
     type: QueueType = QueueType.Sound | QueueType.Video): Promise<VideoPlaybackResult>
 {
@@ -216,10 +215,6 @@ export function VideoPlay(
             return reject({ error: VideoPlaybackError.Cooldown });
         }
 
-        if (control) {
-            control = { ...control };
-        }
-
         function onComplete(): void
         {
             resolve({ error: VideoPlaybackError.NoError });
@@ -227,14 +222,14 @@ export function VideoPlay(
 
         switch (mode) {
         case QueueMode.Bypass:
-            _playFile(container, name, user, events, control).then(onComplete);
+            _playFile(container, name, user, options).then(onComplete);
             break;
         default:
             QueuePush({
                 mode,
                 type,
                 handler: (queueid: string): void => {
-                    _playFile(container, name, user, events, control, queueid).then(onComplete);
+                    _playFile(container, name, user, options, queueid).then(onComplete);
                 },
             });
             break;
@@ -320,6 +315,36 @@ export function VideoResume(
     name: string): void
 {
     //
+}
+
+/**
+ * @return {VideoControl}
+ */
+export function VideoControlCreate(
+    speed: number,
+    volume: number): VideoControl
+{
+    return {
+        speed: speed ?? 1,
+        volume: volume ?? 1,
+    };
+}
+
+/**
+ * @return {VideoControl}
+ */
+export function VideoEventHandlerCreate(
+    onCreate?: (playback: VideoPlayback) => void,
+    onReject?: () => void,
+    onPlaybackStart?: (playback: VideoPlayback) => void,
+    onPlaybackEnd?: (playback: VideoPlayback) => void): VideoEventHandler
+{
+    return {
+        onCreate,
+        onReject,
+        onPlaybackStart,
+        onPlaybackEnd,
+    };
 }
 
 /**
