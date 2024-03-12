@@ -417,7 +417,7 @@ export function VideoIsPlaying(
  *
  * @return {boolean}
  */
-export function VideoPlayedWithin(
+export function VideoWasPlayedWithin(
     name: string,
     threshold: Duration | DurationTuple,
     filter?: UserFilter): boolean
