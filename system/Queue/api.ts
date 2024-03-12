@@ -2,7 +2,7 @@
  * Relative Imports
 */
 
-import { QueueItem, QueueMode, QueueState, QueueOptions } from './types';
+import { QueueItem, QueueMode, QueueOptions, QueueState } from './types';
 
 /**
  * Locals
