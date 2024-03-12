@@ -28,7 +28,7 @@ import { Sound, SoundTTSOptions, SoundControl, SoundListeners, SoundPlayback, So
  * Locals
 */
 
-let _nextUid = 0;
+let _nextPlaybackId = 0;
 let _sounds: Record<string, Sound> = {};
 let _playing: Array<SoundPlayback> = [];
 
@@ -204,7 +204,7 @@ export function SoundPlay(
 
         async function onStart(queueid?: string): Promise<void>
         {
-            await _play(_nextUid++, _sounds[name].uri, name, user, options);
+            await _play(_nextPlaybackId++, _sounds[name].uri, name, user, options);
 
             if (queueid) {
                 QueuePop(queueid);
