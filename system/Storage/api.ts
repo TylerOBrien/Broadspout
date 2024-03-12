@@ -8,8 +8,8 @@ import { StorageConfig } from '@config/Storage';
  * Config
 */
 
-import { StorageMode } from './types';
-import { StorageGetLocal, StorageGetRemote } from './drivers';
+import { StorageItem, StorageMode } from './types';
+import { StorageGetLocal, StorageGetRemote, StorageSetLocal, StorageSetRemote } from './drivers';
 
 /**
  * Public Functions
@@ -131,14 +131,25 @@ export function StorageRecordAdd<Ty>(
 export async function StorageGet<Ty>(
     key: string,
     defaultValue: Ty = null,
-    mode?: StorageMode): Promise<Ty>
+    mode?: StorageMode): Promise<StorageItem<Ty>>
 {
     switch (mode || StorageConfig.defaultMode) {
     case StorageMode.Local:
         return StorageGetLocal(key, defaultValue);
     case StorageMode.Remote:
-        return await StorageGetRemote('http://localhost', key, defaultValue);
+        return await StorageGetRemote(StorageRemoteURL(), key, defaultValue);
     }
+}
+
+/**
+ * @return {Promise<Ty>}
+ */
+export async function StorageGetData<Ty>(
+    key: string,
+    defaultValue: Ty = null,
+    mode?: StorageMode): Promise<Ty>
+{
+    return (await StorageGet(key, defaultValue, mode)).data;
 }
 
 /**
@@ -146,9 +157,23 @@ export async function StorageGet<Ty>(
  */
 export async function StorageSet<Ty>(
     key: string,
-    data: Ty): Promise<void>
+    data: Ty,
+    mode?: StorageMode): Promise<void>
 {
-    localStorage.setItem(key, JSON.stringify(data));
+    switch (mode || StorageConfig.defaultMode) {
+    case StorageMode.Local:
+        return StorageSetLocal(key, data);
+    case StorageMode.Remote:
+        return await StorageSetRemote(StorageRemoteURL(), key, data);
+    }
+}
+
+/**
+ * @return {@string}
+ */
+export function StorageRemoteURL(): string
+{
+    return `${ StorageConfig.remote.protocol }://${ StorageConfig.remote.host }:${ StorageConfig.remote.port }`;
 }
 
 /**
