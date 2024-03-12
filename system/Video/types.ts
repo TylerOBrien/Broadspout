@@ -2,7 +2,9 @@
  * System
 */
 
-import { AABB, Extent } from '@system/Geometry';
+import { Duration } from '@system/Chrono';
+import { AABB, Extent, Point } from '@system/Geometry';
+import { UserIdentity } from '@system/User';
 
 /**
  * Types/Interfaces
@@ -10,20 +12,19 @@ import { AABB, Extent } from '@system/Geometry';
 
 export type VideoExtension = 'mp4' | 'mkv' | 'm4v' | 'webm';
 
-export interface VideoEventHandler
-{
-    onCreate: (video: HTMLVideoElement) => void;
-    onReject: () => void;
-    onPlaybackStart: (video: HTMLVideoElement) => void;
-    onPlaybackEnd: (video: HTMLVideoElement) => void;
-}
-
 export interface Video
 {
     uri: string;
     extension: VideoExtension;
-    history: Array<Date>;
     extent?: Extent;
+    duration?: Duration;
+}
+
+export interface VideoControl
+{
+    position?: Point;
+    speed?: number;
+    volume?: number;
 }
 
 export enum VideoPlaybackState
@@ -39,10 +40,25 @@ export interface VideoPlayback
     container: string;
     video: Video;
     element: HTMLVideoElement;
+    control: VideoControl;
     when: Date;
     state: VideoPlaybackState;
     events?: VideoEventHandler;
     queueid?: string;
+    position?: Point;
+}
+
+export enum VideoPlaybackError
+{
+    NoError = 'NoError',
+    NotFound = 'NotFound',
+    Cooldown = 'Cooldown',
+    QueueReject = 'QueueReject',
+}
+
+export interface VideoPlaybackResult
+{
+    error: VideoPlaybackError;
 }
 
 export interface VideoContainer
@@ -50,4 +66,12 @@ export interface VideoContainer
     element: HTMLDivElement;
     bounds: AABB;
     videos: Record<string, Video>;
+}
+
+export interface VideoEventHandler
+{
+    onCreate: (playback: VideoPlayback) => void;
+    onReject: () => void;
+    onPlaybackStart: (playback: VideoPlayback) => void;
+    onPlaybackEnd: (playback: VideoPlayback) => void;
 }
