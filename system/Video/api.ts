@@ -233,6 +233,10 @@ export function VideoPlay(
 
         function onComplete(): void
         {
+            if (options?.onSuccess) {
+                options?.onSuccess(result);
+            }
+
             resolve(result);
         }
 
