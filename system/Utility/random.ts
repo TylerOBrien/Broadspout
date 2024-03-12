@@ -1,5 +1,5 @@
 /**
- * Public Functions
+ * Functions
 */
 
 /**
@@ -9,9 +9,9 @@
  * @param {number} min The minimum value in the range.
  * @param {number} max The maximum value in the range.
  *
- * @return {number}
+ * @return {number} The random integer.
  */
-export function RandomInt(
+function int(
     min: number,
     max: number): number
 {
@@ -28,7 +28,7 @@ export function RandomInt(
 
     do {
         crypto.getRandomValues(bytes);
-        value = bytes.reduce((acc, x, n) => acc + x * 256 ** n, 0);
+        value = bytes.reduce((acc, x, n): number => acc + x * 256 ** n, 0);
     } while (value >= cutoff);
 
     return min + value % range;
@@ -38,11 +38,11 @@ export function RandomInt(
  * Returns a random element from the given array. Will return undefined if the
  * array is empty.
  *
- * @param {Array<Ty>} elements
+ * @param {Array<Ty>} elements The array to pick a random element from.
  *
- * @return {Ty}
+ * @return {Ty} The random element.
  */
-export function RandomFrom<Ty>(
+function from<Ty>(
     elements: Array<Ty>): Ty
 {
     const max = elements?.length;
@@ -53,20 +53,14 @@ export function RandomFrom<Ty>(
         return elements[0];
     }
 
-    return elements[RandomInt(0, max - 1)];
+    return elements[int(0, max-1)];
 }
 
 /**
- * Returns true if the given ASCII key code is for an alphanumeric character.
- *
- * @param {number} charCode The code for the ASCII character.
- *
- * @return {boolean}
- */
-export function isAlphaNumericChar(
-    charCode: number): boolean
-{
-    return (charCode > 47 && charCode < 58) || // (0-9)
-           (charCode > 64 && charCode < 91) || // (A-Z)
-           (charCode > 96 && charCode < 123);  // (a-z)
+ * Utility
+*/
+
+export const Random = {
+    int,
+    from,
 };
