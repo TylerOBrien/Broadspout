@@ -8,46 +8,114 @@ import { ChatUserstate } from 'tmi.js';
  * Relative Imports
 */
 
-import { User, UserStatus } from './types';
-import { isUser } from './guards';
+import { isUser, isUserIdentity, isTmiUserState } from './guards';
+import { UserCreateFromTmi, UserCreateStatusFromTmi } from './drivers';
+import { User, UserFilter, UserFilterCriteria, UserFilterSubject, UserIdentity, UserStatus } from './types';
 
 /**
  * Public Functions
 */
 
 /**
- * Returns a new Broadspout User object based off the given tmi user.
+ * Returns a new Broadspout User object based off the given provider data.
  *
- * @param {ChatUserstate} state The tmi user object.
+ * @param {ChatUserstate} from The source to use when creating the User object.
  *
  * @return {User}
  */
 export function UserCreate(
-    state: ChatUserstate): User
+    from: ChatUserstate): User
 {
-    return {
-        id: state['user-id'],
-        name: state['display-name'],
-        login: state.username,
-        color: state.color,
-        badges: [],
-        status: UserStatusCreate(state),
-    };
+    if (isTmiUserState(from)) {
+        return UserCreateFromTmi(from);
+    }
 }
 
 /**
- * @param {ChatUserstate} state
+ * @param {ChatUserstate} from
  *
  * @return {UserStatus}
  */
 export function UserStatusCreate(
-    state: ChatUserstate): UserStatus
+    from: ChatUserstate): UserStatus
 {
-    return (
-        (state.subscriber ? UserStatus.Subscriber: 0) |
-        (state.mod ? UserStatus.Moderator : 0) |
-        (state.badges && ('broadcaster' in state.badges) ? UserStatus.Broadcaster : 0)
-    );
+    if (isTmiUserState(from)) {
+        return UserCreateStatusFromTmi(from);
+    }
+}
+
+/**
+ * @param {UserFilterSubject} subject
+ * @param {UserFilterCriteria} criteria
+ *
+ * @return {UserFilter}
+ */
+export function UserFilterCreate(
+    subject: UserFilterSubject,
+    criteria?: UserFilterCriteria): UserFilter
+{
+    return {
+        criteria,
+        subject: Array.isArray(subject) ? [...subject] : subject, // Clone array if given to eliminate side-effects from holding a reference.
+    };
+}
+
+/**
+ * @return {boolean}
+ */
+export function UserFilterIsMatch(
+    filter: UserFilter,
+    against: string | User | UserIdentity | { userid: string }): boolean
+{
+    if (isUser(filter.subject)) {
+        if (isUserIdentity(against)) {
+            if (filter.criteria === UserFilterCriteria.None) {
+                return filter.subject.id !== against.id;
+            } else {
+                return filter.subject.id === against.id;
+            }
+        } else if (typeof against === 'string') {
+            if (filter.criteria === UserFilterCriteria.None) {
+                return filter.subject.id !== against;
+            } else {
+                return filter.subject.id === against;
+            }
+        } else {
+            if (filter.criteria === UserFilterCriteria.None) {
+                return filter.subject.id !== against.userid;
+            } else {
+                return filter.subject.id === against.userid;
+            }
+        }
+    } else if (typeof filter.subject === 'string') {
+        if (isUserIdentity(against)) {
+            if (filter.criteria === UserFilterCriteria.None) {
+                return filter.subject !== against.id;
+            } else {
+                return filter.subject === against.id;
+            }
+        } else if (typeof against === 'string') {
+            if (filter.criteria === UserFilterCriteria.None) {
+                return filter.subject !== against;
+            } else {
+                return filter.subject === against;
+            }
+        } else {
+            if (filter.criteria === UserFilterCriteria.None) {
+                return filter.subject !== against.userid;
+            } else {
+                return filter.subject === against.userid;
+            }
+        }
+    } else {
+        for (const subject of filter.subject) {
+            if (UserFilterIsMatch({ subject, criteria: filter.criteria }, against)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 /**

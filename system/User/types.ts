@@ -18,13 +18,41 @@ export enum UserStatus
     Broadcaster = 0b10000,
 }
 
+export enum UserProvider
+{
+    Twitch  = 'Twitch',
+    Discord = 'Discord',
+    YouTube = 'YouTube',
+}
+
+export interface UserIdentity
+{
+    id: string;
+}
+
 export interface User
 {
     id: string;
+    provider: UserProvider;
     name: string;
     login: string;
     status: UserStatus;
     badges: Array<Badge>;
     color?: string;
     profile?: Profile;
+}
+
+export type UserFilterSubject = string | User | Array<string | User>;
+
+export enum UserFilterCriteria
+{
+    All  = 'All',
+    Any  = 'Any',
+    None = 'None',
+}
+
+export interface UserFilter
+{
+    subject: UserFilterSubject;
+    criteria: UserFilterCriteria;
 }
