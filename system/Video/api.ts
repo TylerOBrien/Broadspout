@@ -204,15 +204,15 @@ export function VideoPlay(
     mode: QueueMode = QueueMode.Enqueue,
     type: QueueType = QueueType.Sound | QueueType.Video): Promise<VideoPlaybackResult>
 {
-    return new Promise((resolve, reject): void => {
+    return new Promise((resolve): void => {
         name = (name || '').toLowerCase();
 
         if (!(name in _videos)) {
-            return reject({ error: VideoPlaybackError.NotFound });
+            return resolve({ error: VideoPlaybackError.NotFound });
         }
 
         if (_isCooldownActive(name, user)) {
-            return reject({ error: VideoPlaybackError.Cooldown });
+            return resolve({ error: VideoPlaybackError.Cooldown });
         }
 
         function onComplete(): void
