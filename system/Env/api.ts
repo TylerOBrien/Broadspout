@@ -39,12 +39,12 @@ function _getElement(
 */
 
 /**
- * Returns the specified config value.
+ * Returns the specified environment value.
  *
- * @param {string} key The key/name of the config value.
- * @param {string} defaultValue The value to return if the config value cannot be found.
+ * @param {string} key The key/name of the environment value.
+ * @param {string} defaultValue The value to return if the environment value cannot be found.
  *
- * @return {string} The config value.
+ * @return {string} The environment value.
  */
 export function Env(
     key: string,
@@ -75,10 +75,10 @@ export function Env(
 }
 
 /**
- * Prepares the Config API for usage. Should only be called once.
+ * Prepares the Env API for usage. Should only be called once.
  *
- * Waits for the required config keys to be injected into CSS by OBS. If the
- * keys are not found within 10 seconds then the promise will be rejected.
+ * Waits for the required environment keys to be injected into CSS by OBS. If
+ * the keys are not found then the promise will be rejected.
  *
  * @return {Promise<void>}
  */
