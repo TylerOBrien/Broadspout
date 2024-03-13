@@ -1,6 +1,13 @@
 /**
+ * System
+*/
+
+import { isAlphaNumericChar } from '@system/Utility';
+
+/**
  * Relative Imports
 */
+
 
 import { ProfileGetFromSRC, ProfileGetFromTwitch, ProfileUsernameValidLengths } from './drivers';
 import { Profile, ProfileProvider } from './types';
@@ -46,10 +53,19 @@ export function ProfileIsValidUsername(
     username: string,
     provider: ProfileProvider): boolean
 {
+    const length = username.length;
     const [ min, max ] = ProfileUsernameValidLengths[provider];
 
-    if (username.length < min || username.length > max) {
+    if (length < min || length > max) {
         return false;
+    }
+
+    let index = length;
+
+    while (index--) {
+        if (username[index] !== '_' && !isAlphaNumericChar(username.charCodeAt(index))) {
+            return false;
+        }
     }
 
     return true;
