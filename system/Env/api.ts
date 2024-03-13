@@ -88,13 +88,6 @@ export function Env(
  */
 export function EnvInit(): Promise<void>
 {
-    _base = document.createElement('div');
-
-    _base.id = EnvConfig.baseElementId;
-    _base.style.display = 'none';
-
-    document.body.appendChild(_base);
-
     return new Promise((resolve, reject): void => {
         let attemps = 0;
 
@@ -109,6 +102,13 @@ export function EnvInit(): Promise<void>
                     return;
                 }
             }
+
+            _base = document.createElement('div');
+
+            _base.id = EnvConfig.baseElementId;
+            _base.style.display = 'none';
+
+            document.body.appendChild(_base);
 
             resolve();
         };
