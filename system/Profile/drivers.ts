@@ -14,6 +14,25 @@ import { StorageGet, StorageSet } from '@system/Storage';
 import { Profile } from './types';
 
 /**
+ * Private Functions
+*/
+
+/**
+ * @return {Promise<Profile>}
+ */
+async function _getFromStorage(
+    key: string): Promise<Profile>
+{
+    const storage = await StorageGet<Profile>(key);
+
+    if (!storage || ChronoDateDelta(new Date, storage.writtenAt, DurationType.Days).value > 2) {
+        return null;
+    }
+
+    return storage.data;
+}
+
+/**
  * Public Functions
 */
 
@@ -29,10 +48,10 @@ export function ProfileDriverSRC(
         username = username.toLowerCase();
 
         if (ProfileConfig.storage.enabled) {
-            const storage = await StorageGet<Profile>(ProfileConfig.storage.keyPrefix.src + username);
+            const stored = await _getFromStorage(ProfileConfig.storage.keyPrefix.src + username);
 
-            if (storage && ChronoDateDelta(new Date, storage.writtenAt, DurationType.Days).value > 2) {
-                return resolve(storage.data);
+            if (stored) {
+                return resolve(stored);
             }
         }
 
@@ -86,10 +105,10 @@ export function ProfileDriverTwitch(
         username = username.toLowerCase();
 
         if (ProfileConfig.storage.enabled) {
-            const storage = await StorageGet<Profile>(ProfileConfig.storage.keyPrefix.twitch + username);
+            const stored = await _getFromStorage(ProfileConfig.storage.keyPrefix.twitch + username);
 
-            if (storage) {
-                return resolve(storage.data);
+            if (stored) {
+                return resolve(stored);
             }
         }
 
