@@ -2,11 +2,11 @@
  * System Imports
 */
 
-import { ChatAddEventHandler, ChatMessage } from '@system/Chat';
+import { ChatAddEventListener, ChatMessage } from '@system/Chat';
 import { GreetConfig } from '@config/Greet';
 import { ProfileGet, ProfileProvider } from '@system/Profile';
 import { QueueMode, QueuePop, QueuePush, QueueType } from '@system/Queue';
-import { StorageGet, StorageSet } from '@system/Storage';
+import { StorageGet, StorageGetData, StorageSet } from '@system/Storage';
 import { User } from '@system/User';
 
 /**
@@ -40,10 +40,11 @@ let _handler: GreetHandler;
  * @return {void}
  */
 function _handleChatMessage(
+    user: User,
     message: ChatMessage): void
 {
-    if (_enabled && !GreetIsGreeted(message.user) && !GreetIsQueued(message.user)) {
-        _enqueue(message.user);
+    if (_enabled && !GreetIsGreeted(user) && !GreetIsQueued(user)) {
+        _enqueue(user);
     }
 }
 
@@ -59,13 +60,13 @@ async function _handleGreetFinish(): Promise<void>
         await StorageSet(GreetConfig.storage.history.name, _greeted);
     }
 
-    _greetNextUser();
+    _greetNextUserIfQueued();
 }
 
 /**
  * @return {void}
  */
-function _greetNextUser(): void
+function _greetNextUserIfQueued(): void
 {
     const user = _queue[0];
 
@@ -102,7 +103,7 @@ function _enqueue(
     user: User): void
 {
     if (_queue.push(user) === 1) {
-        _greetNextUser();
+        _greetNextUserIfQueued();
     }
 }
 
@@ -134,6 +135,16 @@ export function GreetIsGreeted(
     user: User): boolean
 {
     return _greeted.indexOf(user.login) === -1;
+}
+
+/**
+ * @return {boolean}
+ */
+export function GreetIsGreeting(
+    user: User): boolean
+{
+    return _state === GreetState.Busy &&
+           _queue[0].id === user.id;
 }
 
 /**
@@ -203,10 +214,10 @@ export async function GreetInit(): Promise<void>
     _enabled = true;
 
     if (GreetConfig.storage.enabled) {
-        _greeted = await StorageGet<Array<string>>(GreetConfig.storage.history.name, []);
+        _greeted = await StorageGetData<Array<string>>(GreetConfig.storage.history.name, []);
     }
 
     await GreetReload();
 
-    ChatAddEventHandler(_handleChatMessage);
+    ChatAddEventListener(_handleChatMessage);
 }
