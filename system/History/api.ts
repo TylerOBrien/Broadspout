@@ -81,7 +81,7 @@ export function HistoryPush(
  */
 export function HistoryClear(
     category: string,
-    record?: string,): void
+    record?: string): void
 {
     if (!(category in _history)) {
         return;
