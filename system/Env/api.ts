@@ -1,21 +1,15 @@
 /**
- * Root Imports
+ * Config
 */
 
-import { ConfigConfig } from '@config/Config';
-
-/**
- * Relative Imports
-*/
-
-import { ConfigKey } from './types';
+import { EnvConfig } from '@config/Env';
 
 /**
  * Locals
 */
 
 let _base: HTMLDivElement;
-const _config: { [P in ConfigKey]?: string } = {};
+let _cache: Record<string, string>;
 
 /**
  * Private Functions
@@ -47,17 +41,17 @@ function _getElement(
 /**
  * Returns the specified config value.
  *
- * @param {ConfigKey} key The key/name of the config value.
+ * @param {string} key The key/name of the config value.
  * @param {string} defaultValue The value to return if the config value cannot be found.
  *
  * @return {string} The config value.
  */
-export function Config(
-    key: ConfigKey,
+export function Env(
+    key: string,
     defaultValue: string = null): string
 {
-    if (key in _config) {
-        return _config[key];
+    if (key in _cache) {
+        return _cache[key];
     }
 
     const params = new URLSearchParams(location.search);
@@ -74,10 +68,10 @@ export function Config(
     case 'none':
         return defaultValue;
     default:
-        _config[key] = content.slice(1, -1); // Remove quotation marks added by CSS.
+        _cache[key] = content.slice(1, -1); // Remove quotation marks added by CSS.
     }
 
-    return _config[key];
+    return _cache[key];
 }
 
 /**
@@ -88,7 +82,7 @@ export function Config(
  *
  * @return {Promise<void>}
  */
-export function ConfigInit(): Promise<void>
+export function EnvInit(): Promise<void>
 {
     _base = document.createElement('div');
 
@@ -97,7 +91,7 @@ export function ConfigInit(): Promise<void>
 
     document.body.appendChild(_base);
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject): void => {
         let attemps = 0;
 
         const wait = (): void => {
@@ -105,8 +99,8 @@ export function ConfigInit(): Promise<void>
                 return reject(); // Consider 100 attempts to be a failure as this should never take this long.
             }
 
-            for (const key of ConfigConfig.required) {
-                if (!Config(key)) {
+            for (const key of EnvConfig.required) {
+                if (!Env(key)) {
                     setTimeout(wait, 50);
                     return;
                 }
