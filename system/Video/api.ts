@@ -16,7 +16,6 @@ import { VideoConfig } from '@config/Video';
 
 import { Video, VideoContainer, VideoControl, VideoEventHandler, VideoExtension, VideoPlayback, VideoPlaybackError, VideoPlaybackResult, VideoPlaybackState } from './types';
 import { HistoryPush, HistoryFind } from '@system/History/api';
-import { HistoryType } from '@system/History/types';
 
 /**
  * Locals
@@ -145,7 +144,7 @@ function _playFile(
             state: VideoPlaybackState.Loading,
         };
 
-        HistoryPush(HistoryType.Video, name, user, when);
+        HistoryPush(VideoConfig.history.category, name, user, when);
 
         _playing.push(playback);
         _containers[container].element.appendChild(video);
@@ -427,7 +426,7 @@ export function VideoWasPlayedWithin(
         return false;
     }
 
-    const history = HistoryFind(HistoryType.Video, name, filter);
+    const history = HistoryFind(VideoConfig.history.category, name, filter);
 
     if (!history) {
         return false;

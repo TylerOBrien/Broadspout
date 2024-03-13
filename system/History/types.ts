@@ -8,12 +8,6 @@ import { UserIdentity } from '@system/User';
  * Types/Interfaces
 */
 
-export enum HistoryType
-{
-    Sound = 'Sound',
-    Video = 'Video',
-}
-
 export interface HistoryItem
 {
     user: UserIdentity;
@@ -21,4 +15,4 @@ export interface HistoryItem
 }
 
 export type HistoryRecord = Record<string, Array<HistoryItem>>;
-export type History       = { [Ty in HistoryType]?: HistoryRecord };
+export type History       = Record<string, HistoryRecord>;

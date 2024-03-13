@@ -8,7 +8,7 @@ import { User, UserFilter, UserFilterIsMatch } from '@system/User';
  * Relative Imports
 */
 
-import { History, HistoryItem, HistoryType } from './types';
+import { History, HistoryItem } from './types';
 
 /**
  * Locals
@@ -21,21 +21,21 @@ const _history: History = {};
 */
 
 /**
- * @param {HistoryType} type The type/category of history.
- * @param {string} record The name of the record within the specified type/category.
+ * @param {string} category The category of history.
+ * @param {string} record The name of the record within the specified category.
  * @param {UserFilter} filter The user filter to compare against.
  *
  * @return {HistoryItem} The history item.
  */
 export function HistoryFind(
-    type: HistoryType,
+    category: string,
     record: string,
     filter: UserFilter): HistoryItem
 {
-    let index = _history[type]?.[record]?.length ?? 0;
+    let index = _history[category]?.[record]?.length ?? 0;
 
     while (index--) {
-        if (UserFilterIsMatch(filter, _history[type][record][index].user)) {
+        if (UserFilterIsMatch(filter, _history[category][record][index].user)) {
             break;
         }
     }
@@ -44,30 +44,30 @@ export function HistoryFind(
         return null;
     }
 
-    return _history[type][record][index];
+    return _history[category][record][index];
 }
 
 /**
- * @param {HistoryType} type The type/category of history.
- * @param {string} record The name of the record within the specified type/category.
+ * @param {string} category The category of history.
+ * @param {string} record The name of the record within the specified category.
  * @param {User} user The user whom performed an action to record.
  * @param {Date} when When the action was performed.
  *
  * @return {void}
  */
 export function HistoryPush(
-    type: HistoryType,
+    category: string,
     record: string,
     user?: User,
     when?: Date): void
 {
-    if (!(type in _history)) {
-        _history[type] = { [record]: [] };
-    } else if (!(record in _history[type])) {
-        _history[type][record] = [];
+    if (!(category in _history)) {
+        _history[category] = { [record]: [] };
+    } else if (!(record in _history[category])) {
+        _history[category][record] = [];
     }
 
-    _history[type][record].push({
+    _history[category][record].push({
         user: user ? { id: user.id } : null,
         when: when ?? new Date,
     });
