@@ -65,10 +65,10 @@ function _isExpired(
         return false;
     }
 
-    const ms = ChronoDurationConvert(threshold, DurationType.Milliseconds);
+    const expiresAfter = ChronoDurationConvert(threshold, DurationType.Milliseconds);
     const delta = ChronoDateDelta(new Date, _cache[cacheKey].loadedAt, DurationType.Milliseconds);
 
-    return delta.value > ms.value;
+    return delta.value > expiresAfter.value;
 }
 
 /**
