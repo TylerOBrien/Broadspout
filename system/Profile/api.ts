@@ -19,7 +19,7 @@ import { Profile, ProfileProvider } from './types';
  */
 export async function ProfileGet(
     username: string,
-    provider: ProfileProvider = ProfileProvider.Twitch): Promise<Profile>
+    provider: ProfileProvider): Promise<Profile>
 {
     if (!ProfileIsValidUsername(username, provider)) {
         throw new Error; // TODO: handle error
@@ -44,7 +44,7 @@ export async function ProfileGet(
  */
 export function ProfileIsValidUsername(
     username: string,
-    provider: ProfileProvider = ProfileProvider.Twitch): boolean
+    provider: ProfileProvider): boolean
 {
     if (username.length < 4 || username.length > 25) {
         return false;
