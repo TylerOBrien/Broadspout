@@ -11,7 +11,7 @@ import { StorageGet, StorageSet } from '@system/Storage';
  * Relative Imports
 */
 
-import { Profile } from './types';
+import { Profile, ProfileProvider } from './types';
 
 /**
  * Private Functions
@@ -70,6 +70,7 @@ export function ProfileDriverSRC(
         const json = await response.json();
         const profile: Profile = {
             id: json.id,
+            provider: ProfileProvider.SRC,
             name: json.names.international,
             login: json.names.international,
             avatar_url: null,
@@ -125,6 +126,7 @@ export function ProfileDriverTwitch(
         const json = await response.json();
         const profile: Profile = {
             id: json.id,
+            provider: ProfileProvider.Twitch,
             name: json.names.international,
             login: json.names.international,
             avatar_url: json.data[0].profile_image_url,
