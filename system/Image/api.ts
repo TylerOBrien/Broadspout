@@ -52,20 +52,22 @@ function _waitAndCloneFromCache(
 }
 
 /**
- * @param {string} cacheKey The key to be used for cache storage.
- * @param {Duration | DurationTuple} cacheTTL
+ * Returns true if the specified cache item is expired. False otherwise.
  *
- * @return {boolean}
+ * @param {string} cacheKey The key to be used for cache storage.
+ * @param {Duration | DurationTuple} cacheTTL How long the cache item is valid for.
+ *
+ * @return {boolean} Whether the given key is for an expired cache item.
  */
 function _isExpired(
     cacheKey: string,
-    threshold: Duration | DurationTuple): boolean
+    cacheTTL: Duration | DurationTuple): boolean
 {
     if (!_cache[cacheKey]?.loadedAt) {
         return false;
     }
 
-    const expiresAfter = ChronoDurationConvert(threshold, DurationType.Milliseconds);
+    const expiresAfter = ChronoDurationConvert(cacheTTL, DurationType.Milliseconds);
     const beenInCacheFor = ChronoDateDelta(new Date, _cache[cacheKey].loadedAt, DurationType.Milliseconds);
 
     return beenInCacheFor.value > expiresAfter.value;
