@@ -1,4 +1,12 @@
+/**
+ * System
+*/
+
 import { StorageMode } from '@system/Storage';
+
+/**
+ * Config
+*/
 
 export const StorageConfig = {
     remote: {
