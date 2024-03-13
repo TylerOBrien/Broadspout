@@ -10,7 +10,7 @@ import { SoundConfig } from '@config/Sound';
 
 import { ChronoDateDelta, ChronoDurationConvert, ChronoMilliseconds, ChronoSeconds, Duration, DurationTuple, DurationType } from '@system/Chrono';
 import { CooldownIsActive, CooldownType, CooldownGetResponse } from '@system/Cooldown';
-import { HistoryFindItem } from '@system/History/api';
+import { HistoryFind } from '@system/History/api';
 import { HistoryType } from '@system/History/types';
 import { QueueMode, QueuePop, QueuePush, QueueType } from '@system/Queue';
 import { TmiSend } from '@system/Tmi';
@@ -400,7 +400,7 @@ export function SoundWasPlayedWithin(
         return false;
     }
 
-    const history = HistoryFindItem(HistoryType.Sound, name, filter);
+    const history = HistoryFind(HistoryType.Sound, name, filter);
 
     if (!history) {
         return false;

@@ -27,7 +27,7 @@ const _history: History = {};
  *
  * @return {HistoryItem} The history item.
  */
-export function HistoryFindItem(
+export function HistoryFind(
     type: HistoryType,
     record: string,
     filter: UserFilter): HistoryItem
@@ -55,7 +55,7 @@ export function HistoryFindItem(
  *
  * @return {void}
  */
-export function HistoryAddItem(
+export function HistoryPush(
     type: HistoryType,
     record: string,
     user?: User,
