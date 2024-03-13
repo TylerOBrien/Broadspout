@@ -186,9 +186,9 @@ export function SoundRegister(
  * @param {string} name The name of the sound.
  * @param {User} user The user who triggered the sound.
  * @param {QueueMode} mode The queue mode to use.
- * @param {SoundPlaybackOption} option
+ * @param {SoundControl & SoundListeners} options The sound options.
  *
- * @return {Promise<SoundPlaybackResult>}
+ * @return {Promise<SoundPlaybackResult>} The result of the playback.
  */
 export function SoundPlay(
     name: string,
