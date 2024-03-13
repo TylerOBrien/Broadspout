@@ -3,6 +3,7 @@
 */
 
 import { ProfileConfig } from '@config/Profile';
+import { ChronoDateDelta, DurationType } from '@system/Chrono';
 import { StorageGet, StorageSet } from '@system/Storage';
 
 /**
@@ -29,10 +30,10 @@ export function ProfileDriverSRC(
         username = username.toLowerCase();
 
         if (ProfileConfig.storage.enabled) {
-            const storage: Profile = StorageGet(ProfileConfig.storage.keyPrefix.src + username);
+            const storage = await StorageGet<Profile>(ProfileConfig.storage.keyPrefix.src + username);
 
-            if (storage) {
-                return resolve(storage);
+            if (storage && ChronoDateDelta(new Date, storage.writtenAt, DurationType.Days).value > 2) {
+                return resolve(storage.data);
             }
         }
 
@@ -61,7 +62,7 @@ export function ProfileDriverSRC(
         };
 
         if (ProfileConfig.storage.enabled) {
-            StorageSet(ProfileConfig.storage.keyPrefix.src + username, profile);
+            await StorageSet(ProfileConfig.storage.keyPrefix.src + username, profile);
         }
 
         resolve(profile);
@@ -82,10 +83,10 @@ export function ProfileDriverTwitch(
         username = username.toLowerCase();
 
         if (ProfileConfig.storage.enabled) {
-            const storage: Profile = StorageGet(ProfileConfig.storage.keyPrefix.twitch + username);
+            const storage = await StorageGet<Profile>(ProfileConfig.storage.keyPrefix.twitch + username);
 
             if (storage) {
-                return resolve(storage);
+                return resolve(storage.data);
             }
         }
 
@@ -114,7 +115,7 @@ export function ProfileDriverTwitch(
         };
 
         if (ProfileConfig.storage.enabled) {
-            StorageSet(ProfileConfig.storage.keyPrefix.twitch + username, profile);
+            await StorageSet(ProfileConfig.storage.keyPrefix.twitch + username, profile);
         }
 
         resolve(profile);
