@@ -9,6 +9,9 @@ import { Config } from '@system/Config';
 */
 
 export const SoundConfig = {
+    history: {
+        get category() { return 'Sound'; },
+    },
     sounds: {
         get uri() { return Config('sound-uri', '/json/sounds.json'); },
     },
