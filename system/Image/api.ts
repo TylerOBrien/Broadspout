@@ -66,9 +66,9 @@ function _isExpired(
     }
 
     const expiresAfter = ChronoDurationConvert(threshold, DurationType.Milliseconds);
-    const delta = ChronoDateDelta(new Date, _cache[cacheKey].loadedAt, DurationType.Milliseconds);
+    const beenInCacheFor = ChronoDateDelta(new Date, _cache[cacheKey].loadedAt, DurationType.Milliseconds);
 
-    return delta.value > expiresAfter.value;
+    return beenInCacheFor.value > expiresAfter.value;
 }
 
 /**
