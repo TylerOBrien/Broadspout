@@ -9,7 +9,9 @@ import { TwitchConfig } from '@config/Twitch';
  * System Imports
 */
 
-import { ChatCommand, CommandRegister } from '@system/Command';
+import { ChatCommand, ChatCommandRegister } from '@system/Command';
+import { ProfileGet, ProfileProvider } from '@system/Profile';
+import { User } from '@system/User';
 import { isAlphaNumericChar } from '@system/Utility';
 
 /**
@@ -60,13 +62,25 @@ function _isValidForShoutOut(
 }
 
 /**
+ * @return {Promise<void>}
+ */
+async function _fetchProfileAndShout(
+    shouter: User,
+    username: string): Promise<void>
+{
+    _handler(shouter, await ProfileGet(username, ProfileProvider.Twitch));
+}
+
+/**
  * Handles the given command data as a shout out.
  *
+ * @param {User} user The user whom called the shoutout command.
  * @param {ChatCommand} command The command data object.
  *
  * @return {void}
  */
 function _handleShoutOut(
+    user: User,
     command: ChatCommand): void
 {
     // Do nothing if a handler callback has not been set.
@@ -94,16 +108,16 @@ function _handleShoutOut(
     switch (username.toLowerCase()) {
     case TwitchConfig.channel:
         if (ShoutOutConfig.allowBroadcaster) {
-            _handler(command.user, username);
+            _fetchProfileAndShout(command.user, username);
         }
         break;
     case TwitchConfig.username:
         if (ShoutOutConfig.allowBot) {
-            _handler(command.user, username);
+            _fetchProfileAndShout(command.user, username);
         }
         break;
     default:
-        _handler(command.user, username);
+        _fetchProfileAndShout(command.user, username);
         break;
     }
 }
@@ -130,5 +144,5 @@ export function ShoutOutSetHandler(
  */
 export async function ShoutOutInit(): Promise<void>
 {
-    CommandRegister('so', _handleShoutOut);
+    ChatCommandRegister('so', _handleShoutOut);
 }
