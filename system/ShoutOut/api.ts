@@ -53,15 +53,17 @@ function _isAllowedToShoutOut(
 function _isValidForShoutOut(
     name: string): boolean
 {
+    const length = name.length;
+
     // Check username length requirements enforced by Twitch.
 
-    if (name.length < 4 || name.length > 25) {
+    if (length < 4 || length > 25) {
         return false;
     }
 
     // Ensure only valid characters are used.
 
-    let index = name.length;
+    let index = length;
 
     while (index--) {
         if (name[index] !== '_' && !isAlphaNumericChar(name.charCodeAt(index))) {
