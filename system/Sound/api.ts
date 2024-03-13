@@ -142,6 +142,29 @@ function _isCooldownActive(
 }
 
 /**
+ * @param {string} name The name of the sound.
+ * @param {User} user The user who triggered the sound.
+ *
+ * @return {SoundPlaybackResult}
+ */
+function _validate(
+    name: string,
+    user: User): SoundPlaybackResult
+{
+    const result: SoundPlaybackResult = {
+        error: SoundPlaybackError.NoError,
+    };
+
+    if (!(name in _sounds)) {
+        result.error = SoundPlaybackError.NotFound;
+    } else if (_isCooldownActive(name, user)) {
+        result.error = SoundPlaybackError.Cooldown;
+    }
+
+    return result;
+}
+
+/**
  * Public Functions
 */
 
@@ -199,23 +222,9 @@ export function SoundPlay(
     return new Promise((resolve): void => {
         name = (name || '').toLowerCase();
 
-        const result: SoundPlaybackResult = {
-            error: SoundPlaybackError.NoError,
-        };
+        const result = _validate(name, user);
 
-        if (!(name in _sounds)) {
-            result.error = SoundPlaybackError.NotFound;
-
-            if (options?.onReject) {
-                options?.onReject(result);
-            }
-
-            return resolve(result);
-        }
-
-        if (_isCooldownActive(name, user)) {
-            result.error = SoundPlaybackError.Cooldown;
-
+        if (result.error !== SoundPlaybackError.NoError) {
             if (options?.onReject) {
                 options?.onReject(result);
             }
