@@ -28,7 +28,7 @@ export function HistoryFindItem(
     record: string,
     filter: UserFilter): HistoryItem
 {
-    let index = _history[type]?.[record]?.length || 0;
+    let index = _history[type]?.[record]?.length ?? 0;
 
     while (index--) {
         if (UserFilterIsMatch(filter, _history[type][record][index].user)) {
