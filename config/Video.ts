@@ -2,7 +2,7 @@
  * Local Imports
 */
 
-import { Config } from '@system/Config';
+import { Env } from '@system/Env';
 
 /**
  * Config
@@ -14,11 +14,11 @@ export const VideoConfig = {
     },
     get baseElementId() { return 'videos'; },
     get host() { return 'http://127.0.0.1'; },
-    get x() { return Config('video-uri', '/json/videos.json'); },
-    get y() { return Config('video-uri', '/json/videos.json'); },
-    get width() { return Config('video-uri', '/json/videos.json'); },
-    get height() { return Config('video-uri', '/json/videos.json'); },
-    get uri() { return Config('video-uri', '/json/videos.json'); },
+    get x() { return Env('video-uri', '/json/videos.json'); },
+    get y() { return Env('video-uri', '/json/videos.json'); },
+    get width() { return Env('video-uri', '/json/videos.json'); },
+    get height() { return Env('video-uri', '/json/videos.json'); },
+    get uri() { return Env('video-uri', '/json/videos.json'); },
     get cooldownEnabled() { return true; },
     get cooldownResponseEnabled() { return true; },
 };

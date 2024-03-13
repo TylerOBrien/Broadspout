@@ -2,12 +2,12 @@
  * Local Imports
 */
 
-import { Config } from '@system/Config';
+import { Env } from '@system/Env';
 
 /**
  * Config
 */
 
 export const EventSubConfig = {
-    get successMessage() { return Config('eventsub-success-message', 'HELLO'); },
+    get successMessage() { return Env('eventsub-success-message', 'HELLO'); },
 };

@@ -2,12 +2,12 @@
  * Local Imports
 */
 
-import { Config } from '@system/Config';
+import { Env } from '@system/Env';
 
 /**
  * Config
 */
 
 export const AppConfig = {
-  get debug() { return Config('debug').toLowerCase() === 'true'; },
+  get debug() { return Env('debug').toLowerCase() === 'true'; },
 };

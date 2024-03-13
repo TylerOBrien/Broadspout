@@ -2,7 +2,7 @@
  * Local Imports
 */
 
-import { Config } from '@system/Config';
+import { Env } from '@system/Env';
 
 /**
  * Config
@@ -13,7 +13,7 @@ export const SoundConfig = {
         get category() { return 'Sound'; },
     },
     sounds: {
-        get uri() { return Config('sound-uri', '/json/sounds.json'); },
+        get uri() { return Env('sound-uri', '/json/sounds.json'); },
     },
     get cooldownEnabled() { return true; },
     get cooldownResponseEnabled() { return true; },
