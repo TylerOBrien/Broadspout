@@ -107,6 +107,7 @@ export function EnvInit(): Promise<void>
                 }
             }
 
+            _cache = {};
             _base = document.createElement('div');
 
             _base.id = EnvConfig.baseElementId;
