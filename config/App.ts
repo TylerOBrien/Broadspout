@@ -9,5 +9,5 @@ import { Env } from '@system/Env';
 */
 
 export const AppConfig = {
-  get debug() { return Env('debug').toLowerCase() === 'true'; },
+    get debug() { return Env('debug').toLowerCase() === 'true'; },
 };
