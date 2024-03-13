@@ -86,7 +86,7 @@ export function EnvInit(): Promise<void>
 {
     _base = document.createElement('div');
 
-    _base.id = 'Config';
+    _base.id = 'Env';
     _base.style.display = 'none';
 
     document.body.appendChild(_base);
