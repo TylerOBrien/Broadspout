@@ -38,8 +38,14 @@ const _cache: Record<string, Image> = {};
 function _waitAndCloneFromCache(
     key: string): Promise<HTMLImageElement>
 {
-    return new Promise((resolve): void => {
+    return new Promise((resolve, reject): void => {
+        let attempts = 0;
+
         const _check = (): void => {
+            if (++attempts > 250) {
+                return reject();
+            }
+
             if (_cache[key].element.complete) {
                 resolve(_cache[key].element.cloneNode() as HTMLImageElement);
             } else {
