@@ -53,7 +53,7 @@ export function ProfileIsValidUsername(
     username: string,
     provider: ProfileProvider): boolean
 {
-    const length = username.length;
+    const length = username?.length ?? 0;
     const [ min, max ] = ProfileUsernameValidLengths[provider];
 
     if (length < min || length > max) {
