@@ -24,6 +24,7 @@
         "mini-css-extract-plugin": "^2.6.1",
         "pixi.js": "^7.0.2",
         "postcss": "^8.4.14",
+        "pusher-js": "^8.4.0-rc2",
         "sass": "^1.53.0",
         "sass-loader": "^13.0.0",
         "tmi.js": "^1.8.5",
