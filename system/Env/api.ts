@@ -16,7 +16,11 @@ let _cache: Record<string, string>;
 */
 
 /**
- * @return {HTMLDivElement}
+ * Returns the environment HTML element associated with the given key.
+ *
+ * @param {string} key The key/name of the environment value.
+ *
+ * @return {HTMLDivElement} The environment HTML element.
  */
 function _getElement(
     key: string): HTMLDivElement
