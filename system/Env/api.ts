@@ -9,7 +9,7 @@ import { EnvConfig } from '@config/Env';
 */
 
 let _base: HTMLDivElement;
-let _cache: Record<string, string>;
+let _cache: Record<string, string> = {};
 
 /**
  * Private Functions
@@ -107,7 +107,6 @@ export function EnvInit(): Promise<void>
                 }
             }
 
-            _cache = {};
             _base = document.createElement('div');
 
             _base.id = EnvConfig.baseElementId;
