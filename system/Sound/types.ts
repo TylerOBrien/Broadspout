@@ -65,3 +65,9 @@ export interface SoundListeners
     onPlaybackStart?: (playback: SoundPlayback) => void;
     onPlaybackEnd?: (playback: SoundPlayback) => void;
 }
+
+export interface SoundBuffer
+{
+    context: AudioContext;
+    source: AudioBufferSourceNode;
+}

@@ -22,7 +22,7 @@ import { SoundPlaybackError, SoundPlaybackResult } from '.';
 */
 
 import { SoundFetchSounds } from './drivers';
-import { Sound, SoundTTSOptions, SoundControl, SoundListeners, SoundPlayback, SoundPlaybackOption } from './types';
+import { Sound, SoundBuffer, SoundTTSOptions, SoundControl, SoundListeners, SoundPlayback, SoundPlaybackOption } from './types';
 
 /**
  * Locals
@@ -35,6 +35,27 @@ let _playing: Array<SoundPlayback> = [];
 /**
  * Private Functions
 */
+
+/**
+ * @param {string} uri
+ *
+ * @return {SoundBuffer}
+ */
+async function _createSoundBuffer(
+    uri: string): Promise<SoundBuffer>
+{
+    const response = await fetch(uri);
+    const context = new AudioContext;
+    const source = context.createBufferSource();
+
+    source.buffer = await context.decodeAudioData(await response.arrayBuffer());
+    source.connect(context.destination);
+
+    return {
+        context,
+        source,
+    };
+}
 
 /**
  * @return {void}
