@@ -21,7 +21,11 @@ const _history: History = {};
 */
 
 /**
- * @return {HistoryItem}
+ * @param {HistoryType} type The type/category of history.
+ * @param {string} record The name of the record within the specified type/category.
+ * @param {UserFilter} filter The user filter to compare against.
+ *
+ * @return {HistoryItem} The history item.
  */
 export function HistoryFindItem(
     type: HistoryType,
@@ -44,6 +48,11 @@ export function HistoryFindItem(
 }
 
 /**
+ * @param {HistoryType} type The type/category of history.
+ * @param {string} record The name of the record within the specified type/category.
+ * @param {User} user The user whom performed an action to record.
+ * @param {Date} when When the action was performed.
+ *
  * @return {void}
  */
 export function HistoryAddItem(
