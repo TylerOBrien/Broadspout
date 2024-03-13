@@ -185,16 +185,16 @@ export function SoundRegister(
 /**
  * @param {string} name The name of the sound.
  * @param {User} user The user who triggered the sound.
- * @param {SoundPlaybackOption} option
  * @param {QueueMode} mode The queue mode to use.
+ * @param {SoundPlaybackOption} option
  *
  * @return {Promise<SoundPlaybackResult>}
  */
 export function SoundPlay(
     name: string,
     user?: User,
-    options?: SoundControl & SoundListeners,
-    mode: QueueMode = QueueMode.Enqueue): Promise<SoundPlaybackResult>
+    mode: QueueMode = QueueMode.Enqueue,
+    options?: SoundControl & SoundListeners): Promise<SoundPlaybackResult>
 {
     return new Promise((resolve): void => {
         name = (name || '').toLowerCase();
