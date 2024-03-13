@@ -25,7 +25,7 @@ let _cache: Record<string, string>;
 function _getElement(
     key: string): HTMLDivElement
 {
-    let element = document.getElementById(key);
+    let element = document.getElementById(key) as HTMLDivElement;
 
     if (!element) {
         element = document.createElement('div');
@@ -35,7 +35,7 @@ function _getElement(
         _base.appendChild(element);
     }
 
-    return element as HTMLDivElement;
+    return element;
 }
 
 /**
