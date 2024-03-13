@@ -72,3 +72,26 @@ export function HistoryPush(
         when: when ?? new Date,
     });
 }
+
+/**
+ * @param {string} category The category of history.
+ * @param {string} record The name of the record within the specified category.
+ *
+ * @return {void}
+ */
+export function HistoryClear(
+    category: string,
+    record?: string,): void
+{
+    if (!(category in _history)) {
+        return;
+    } else if (record && !(record in _history[category])) {
+        return;
+    }
+
+    if (record) {
+        _history[category][record] = [];
+    } else {
+        _history[category] = {};
+    }
+}
