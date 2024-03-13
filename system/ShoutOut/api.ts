@@ -10,9 +10,8 @@ import { TwitchConfig } from '@config/Twitch';
 */
 
 import { ChatCommand, ChatCommandRegister } from '@system/Command';
-import { ProfileGet, ProfileProvider } from '@system/Profile';
+import { ProfileGet, ProfileIsValidUsername, ProfileProvider } from '@system/Profile';
 import { User } from '@system/User';
-import { isAlphaNumericChar } from '@system/Utility';
 
 /**
  * Relative Imports
@@ -40,39 +39,6 @@ function _isAllowedToShoutOut(
     shouter: User,
     username: string): boolean
 {
-    return true;
-}
-
-/**
- * Returns true if the given name is a valid Twitch username. False otherwise.
- *
- * @param {string} name The name of a user to check.
- *
- * @return {boolean} Whether the username is valid for shoutout.
- */
-function _isValidForShoutOut(
-    name: string): boolean
-{
-    const length = name.length;
-
-    // Check username length requirements enforced by Twitch.
-
-    if (length < 4 || length > 25) {
-        return false;
-    }
-
-    // Ensure only valid characters are used.
-
-    let index = length;
-
-    while (index--) {
-        if (name[index] !== '_' && !isAlphaNumericChar(name.charCodeAt(index))) {
-            return false;
-        }
-    }
-
-    // No issues found so username is considered valid.
-
     return true;
 }
 
@@ -117,7 +83,7 @@ function _handleShoutOut(
 
     // Do nothing if given an invalid username.
 
-    if (!_isValidForShoutOut(username)) {
+    if (!ProfileIsValidUsername(username, ProfileProvider.Twitch)) {
         return;
     }
 
