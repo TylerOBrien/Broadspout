@@ -1,5 +1,5 @@
 /**
- * Local Imports
+ * System
 */
 
 import { Env } from '@system/Env';
