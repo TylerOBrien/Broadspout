@@ -31,6 +31,19 @@ let _handler: ShoutoutHandler;
 */
 
 /**
+ * @param {User} shouter
+ * @param {string} username
+ *
+ * @return {boolean}
+ */
+function _isAllowedToShoutOut(
+    shouter: User,
+    username: string): boolean
+{
+    return true;
+}
+
+/**
  * Returns true if the given name is a valid Twitch username. False otherwise.
  *
  * @param {string} name The name of a user to check.
@@ -100,6 +113,12 @@ function _handleShoutOut(
     // Do nothing if given an invalid username.
 
     if (!_isValidForShoutOut(username)) {
+        return;
+    }
+
+    // Do nothing if user is not allowed to shout out.
+
+    if (!_isAllowedToShoutOut(user, username)) {
         return;
     }
 
