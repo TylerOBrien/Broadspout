@@ -54,6 +54,10 @@ export function Env(
     key: string,
     defaultValue: string = null): string
 {
+    if (!_base) {
+        throw new Error; // TODO: handle this error
+    }
+
     if (key in _cache) {
         return _cache[key];
     }
