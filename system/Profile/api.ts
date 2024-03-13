@@ -1,21 +1,9 @@
 /**
- * Config
-*/
-
-import { TwitchConfig } from '@config/Twitch';
-
-/**
  * Relative Imports
 */
 
 import { ProfileDriverSRC, ProfileDriverTwitch } from './drivers';
-import { Profile, ProfileHttpOptions, ProfileProvider } from './types';
-
-/**
- * Locals
-*/
-
-let _options: Record<ProfileProvider, ProfileHttpOptions>;
+import { Profile, ProfileProvider } from './types';
 
 /**
  * Public Functions
@@ -59,29 +47,8 @@ export async function ProfileGet(
 
     switch (provider) {
     case ProfileProvider.SRC:
-        return await ProfileDriverSRC(username, _options[provider]);
+        return await ProfileDriverSRC(username);
     case ProfileProvider.Twitch:
-        return await ProfileDriverTwitch(username, _options[provider]);
+        return await ProfileDriverTwitch(username);
     }
-}
-
-/**
- * @return {Promise<void>}
- */
-export async function ProfileInit(): Promise<void>
-{
-    _options = {
-        [ProfileProvider.SRC]: {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        },
-        [ProfileProvider.Twitch]: {
-            headers: {
-                'Authorization': TwitchConfig.bearer,
-                'Client-Id': TwitchConfig.client,
-                'Content-Type': 'application/json',
-            },
-        },
-    };
 }

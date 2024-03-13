@@ -3,6 +3,7 @@
 */
 
 import { ProfileConfig } from '@config/Profile';
+import { TwitchConfig } from '@config/Twitch';
 import { ChronoDateDelta, DurationType } from '@system/Chrono';
 import { StorageGet, StorageSet } from '@system/Storage';
 
@@ -10,7 +11,7 @@ import { StorageGet, StorageSet } from '@system/Storage';
  * Relative Imports
 */
 
-import { Profile, ProfileHttpOptions } from './types';
+import { Profile } from './types';
 
 /**
  * Public Functions
@@ -18,13 +19,11 @@ import { Profile, ProfileHttpOptions } from './types';
 
 /**
  * @param {string} username
- * @param {ProfileHttpOptions} options
  *
  * @return {Promise<Profile>}
  */
 export function ProfileDriverSRC(
-    username: string,
-    options: ProfileHttpOptions): Promise<Profile>
+    username: string): Promise<Profile>
 {
     return new Promise(async (resolve, reject) => {
         username = username.toLowerCase();
@@ -37,7 +36,13 @@ export function ProfileDriverSRC(
             }
         }
 
-        const response = await fetch(`https://www.speedrun.com/api/v1/users/${ username }`, options);
+        const response = await fetch(`https://www.speedrun.com/api/v1/users/${ username }`, {
+            headers: {
+                'Authorization': TwitchConfig.bearer,
+                'Client-Id': TwitchConfig.client,
+                'Content-Type': 'application/json',
+            },
+        });
 
         if (response.status !== 200) {
             reject();
@@ -71,13 +76,11 @@ export function ProfileDriverSRC(
 
 /**
  * @param {string} username
- * @param {ProfileHttpOptions} options
  *
  * @return {Promise<Profile>}
  */
 export function ProfileDriverTwitch(
-    username: string,
-    options: ProfileHttpOptions): Promise<Profile>
+    username: string): Promise<Profile>
 {
     return new Promise(async (resolve, reject) => {
         username = username.toLowerCase();
@@ -90,7 +93,11 @@ export function ProfileDriverTwitch(
             }
         }
 
-        const response = await fetch(`https://api.twitch.tv/helix/users?login=${ username }`, options);
+        const response = await fetch(`https://api.twitch.tv/helix/users?login=${ username }`, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
 
         if (response.status !== 200) {
             reject();

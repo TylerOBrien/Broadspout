@@ -8,15 +8,6 @@ export enum ProfileProvider
     SRC = 'SRC',
 }
 
-export interface ProfileHttpOptions
-{
-    headers: {
-        'Authorization'?: string;
-        'Client-Id'?: string;
-        'Content-Type': string;
-    };
-}
-
 export interface ProfileColorGradient
 {
     from: string;
