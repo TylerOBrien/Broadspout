@@ -41,7 +41,7 @@ async function _getFromStorage(
  *
  * @return {Promise<Profile>}
  */
-export function ProfileDriverSRC(
+export function ProfileGetFromSRC(
     username: string): Promise<Profile>
 {
     return new Promise(async (resolve, reject) => {
@@ -99,7 +99,7 @@ export function ProfileDriverSRC(
  *
  * @return {Promise<Profile>}
  */
-export function ProfileDriverTwitch(
+export function ProfileGetFromTwitch(
     username: string): Promise<Profile>
 {
     return new Promise(async (resolve, reject) => {

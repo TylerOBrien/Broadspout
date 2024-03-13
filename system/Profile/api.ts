@@ -2,7 +2,7 @@
  * Relative Imports
 */
 
-import { ProfileDriverSRC, ProfileDriverTwitch } from './drivers';
+import { ProfileGetFromSRC, ProfileGetFromTwitch } from './drivers';
 import { Profile, ProfileProvider } from './types';
 
 /**
@@ -27,9 +27,9 @@ export async function ProfileGet(
 
     switch (provider) {
     case ProfileProvider.SRC:
-        return await ProfileDriverSRC(username);
+        return await ProfileGetFromSRC(username);
     case ProfileProvider.Twitch:
-        return await ProfileDriverTwitch(username);
+        return await ProfileGetFromTwitch(username);
     }
 }
 
