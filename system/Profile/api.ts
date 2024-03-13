@@ -40,7 +40,7 @@ export async function ProfileGet(
  * @param {string} username The name of the user.
  * @param {ProfileProvider} provider The service to check username validity for.
  *
- * @return {boolean}
+ * @return {boolean} Whether the username is valid for the provider.
  */
 export function ProfileIsValidUsername(
     username: string,
