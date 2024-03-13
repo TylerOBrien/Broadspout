@@ -400,7 +400,7 @@ export function SoundWasPlayedWithin(
         return false;
     }
 
-    const history = HistoryFindItem(HistoryType.Video, name, filter);
+    const history = HistoryFindItem(HistoryType.Sound, name, filter);
 
     if (!history) {
         return false;
