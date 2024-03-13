@@ -2,7 +2,7 @@
  * Relative Imports
 */
 
-import { ProfileGetFromSRC, ProfileGetFromTwitch } from './drivers';
+import { ProfileGetFromSRC, ProfileGetFromTwitch, ProfileUsernameValidLengths } from './drivers';
 import { Profile, ProfileProvider } from './types';
 
 /**
@@ -46,7 +46,9 @@ export function ProfileIsValidUsername(
     username: string,
     provider: ProfileProvider): boolean
 {
-    if (username.length < 4 || username.length > 25) {
+    const [ min, max ] = ProfileUsernameValidLengths[provider];
+
+    if (username.length < min || username.length > max) {
         return false;
     }
 

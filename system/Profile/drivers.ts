@@ -33,6 +33,15 @@ async function _getFromStorage(
 }
 
 /**
+ * Public Objects
+*/
+
+export const ProfileUsernameValidLengths: Record<ProfileProvider, [number,number]> = {
+    [ProfileProvider.SRC]:    [4, 25],
+    [ProfileProvider.Twitch]: [4, 25],
+};
+
+/**
  * Public Functions
 */
 
