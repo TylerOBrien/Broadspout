@@ -31,10 +31,10 @@ let _handler: ShoutoutHandler;
 */
 
 /**
- * @param {User} shouter
- * @param {string} username
+ * @param {User} shouter The user whom called the shoutout command.
+ * @param {string} username The username being shouted.
  *
- * @return {boolean}
+ * @return {boolean} Whether the shouter is allowed to shout.
  */
 function _isAllowedToShoutOut(
     shouter: User,
@@ -48,7 +48,7 @@ function _isAllowedToShoutOut(
  *
  * @param {string} name The name of a user to check.
  *
- * @return {boolean}
+ * @return {boolean} Whether the username is valid for shoutout.
  */
 function _isValidForShoutOut(
     name: string): boolean
@@ -75,6 +75,9 @@ function _isValidForShoutOut(
 }
 
 /**
+ * @param {User} shouter The user whom called the shoutout command.
+ * @param {string} username The username being shouted.
+ *
  * @return {Promise<void>}
  */
 async function _fetchProfileAndShout(
