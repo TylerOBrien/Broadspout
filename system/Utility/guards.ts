@@ -184,11 +184,19 @@ export function isAlphaNumeric(
     let index = value.length;
 
     while (index--) {
-        const code = value.charCodeAt(index);
-        if ((code < 48 || code > 57) && !(code > 64 && code < 91) && !(code > 96 && code < 123)) {
+        if (!isAlphaNumericChar(value.charCodeAt(index))) {
             return false;
         }
     }
 
     return true;
+}
+
+/**
+ * @return {boolean}
+ */
+export function isAlphaNumericChar(
+    code: number): boolean
+{
+    return !((code < 48 || code > 57) && !(code > 64 && code < 91) && !(code > 96 && code < 123));
 }
