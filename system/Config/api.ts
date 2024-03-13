@@ -18,6 +18,29 @@ let _base: HTMLDivElement;
 const _config: { [P in ConfigKey]?: string } = {};
 
 /**
+ * Private Functions
+*/
+
+/**
+ * @return {HTMLDivElement}
+ */
+function _getElement(
+    key: string): HTMLDivElement
+{
+    let element = document.getElementById(key);
+
+    if (!element) {
+        element = document.createElement('div');
+        element.id = key;
+        element.style.display = 'none';
+
+        _base.appendChild(element);
+    }
+
+    return element as HTMLDivElement;
+}
+
+/**
  * Public Functions
 */
 
@@ -43,16 +66,7 @@ export function Config(
         return params.get(key);
     }
 
-    let element = document.getElementById(key);
-
-    if (!element) {
-        element = document.createElement('div');
-        element.id = key;
-        element.style.display = 'none';
-
-        _base.appendChild(element);
-    }
-
+    const element = _getElement(key);
     const style = window.getComputedStyle(element, '::before');
     const content = style.content;
 
