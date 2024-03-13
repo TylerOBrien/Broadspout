@@ -67,6 +67,10 @@ export function UserFilterIsMatch(
     filter: UserFilter,
     against: string | User | UserIdentity | { userid: string }): boolean
 {
+    if (!filter || !against) {
+        return false;
+    }
+
     if (isUser(filter.subject)) {
         if (isUserIdentity(against)) {
             if (filter.criteria === UserFilterCriteria.None) {
