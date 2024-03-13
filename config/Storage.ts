@@ -15,5 +15,4 @@ export const StorageConfig = {
         get host()     { return Env('storage-host', 'localhost'); },
         get port()     { return Env('storage-port', '80'); },
     },
-    get defaultMode() { return StorageMode.Local; }
 };

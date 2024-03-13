@@ -133,7 +133,7 @@ export async function StorageGet<Ty>(
     defaultValue: Ty = null,
     mode?: StorageMode): Promise<StorageItem<Ty>>
 {
-    switch (mode || StorageConfig.defaultMode) {
+    switch (mode || StorageMode.Local) {
     case StorageMode.Local:
         return StorageGetLocal(key, defaultValue);
     case StorageMode.Remote:
@@ -160,7 +160,7 @@ export async function StorageSet<Ty>(
     data: Ty,
     mode?: StorageMode): Promise<void>
 {
-    switch (mode || StorageConfig.defaultMode) {
+    switch (mode || StorageMode.Local) {
     case StorageMode.Local:
         return StorageSetLocal(key, data);
     case StorageMode.Remote:
