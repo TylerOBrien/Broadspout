@@ -14,6 +14,7 @@ import { ConfigKey } from './types';
  * Locals
 */
 
+let _base: HTMLDivElement;
 const _config: { [P in ConfigKey]?: string } = {};
 
 /**
@@ -49,7 +50,7 @@ export function Config(
         element.id = key;
         element.style.display = 'none';
 
-        document.body.appendChild(element);
+        _base.appendChild(element);
     }
 
     const style = window.getComputedStyle(element, '::before');
@@ -75,6 +76,13 @@ export function Config(
  */
 export function ConfigInit(): Promise<void>
 {
+    _base = document.createElement('div');
+
+    _base.id = 'Config';
+    _base.style.display = 'none';
+
+    document.body.appendChild(_base);
+
     return new Promise((resolve, reject) => {
         let attemps = 0;
 
